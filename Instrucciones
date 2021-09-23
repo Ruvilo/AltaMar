@@ -1,0 +1,16 @@
+////Terminal
+
+Carpeta "server"
+npm install .
+npm init
+node index.js
+
+Carpeta "cliente"
+npm install .
+npm start
+
+node -v = 12.21.0 //Si no es esta da error
+
+sudo npm cache clean -f 
+sudo npm install -g n 
+sudo n 12.21.0
