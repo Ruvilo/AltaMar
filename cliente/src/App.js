@@ -49,6 +49,36 @@ function App() {
 
   };
 
+  app.post("/verificarNum", async (req, res) => {
+    const telefono = req.body.telefono;
+    ModeloUsuario.findOne({telefono:telefono},function(err,user){
+        
+        if(err){res.send(err);}
+        if(user){
+            res.send("True");
+        }
+        
+        else{res.send("False");}
+    })
+  });
+
+  app.post("/login", async (req, res) => {
+    const telefono = req.body.telefono;
+    const clave = req.body.clave;
+    
+    ModeloUsuario.findOne({telefono:telefono},function(err,user){
+        
+        if(err){res.send(err);}
+        if(user){
+            let compare = bcryptjs.compareSync(clave,user["clave"]);
+            if(compare){res.send("True");}
+            else{res.send("False");}
+        }
+        
+        else{res.send("False");}
+    })
+
+  });
 
   useEffect(() => {
     Axios.get("http://localhost:3001/read"
