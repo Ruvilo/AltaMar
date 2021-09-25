@@ -12,7 +12,7 @@ function App() {
   const [localizacion, setLocalizacion] = useState("");
   const [estado, setEstado] = useState("");
   const [listOfProd, setListOfProd] = useState([]);
-  const [listOfCar, setListOfCar] = useState([]); 
+  //const [listOfCar, setListOfCar] = useState([]); 
   const addTel = () =>{
     Axios.post("http://localhost:3001/insert", {
       tel: tel,
@@ -25,6 +25,7 @@ function App() {
     }).then((response) => {
       const publicaciones = {tipo : tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado};
       setListOfProd([...listOfProd, {_id: response.data._id, tel, publicaciones}]);
+      //setListOfCar(...listOfCar, {publicaciones});
     });
   };
 
@@ -42,7 +43,7 @@ function App() {
   const deleteProd = (id) => {
     Axios.delete(`http://localhost:3001/delete/${id}`).then(()=> {
       setListOfProd(listOfProd.filter((val)=> {
-        return val._id != id;
+        return val._id !== id;
       }));
     });
 
@@ -53,7 +54,7 @@ function App() {
     Axios.get("http://localhost:3001/read"
     ).then((response)=>{
       setListOfProd(response.data);
-      setListOfCar(response.data.publicaciones);
+      //setListOfCar(response.data.publicaciones);
     }).catch(()=> {
       console.log("ERROR");
     });
@@ -107,7 +108,13 @@ function App() {
             <div>
               
               <h3><div>Telefono: {val.telefono}</div></h3>
-              <h3>{listOfCar.map((datos)=> <div> Tipo: {datos.tipo} <div>Estado: {datos.estado}</div></div>)}</h3> 
+              {/* <div>
+                {listOfCar.map((datos)=> {
+                return (
+                  <div> Tipo: {datos.tipo} 
+                  <div>Estado: {datos.estado}</div>
+                  </div>)})};
+              </div>  */}
               <button id="removeBtn" onClick={() => {deleteProd(val._id)}}>Delete</button>
               <button onClick={() => {updateProd(val._id)}}>Update</button>
             </div>
