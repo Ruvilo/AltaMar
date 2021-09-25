@@ -12,6 +12,19 @@ mongoose.connect(
     {useNewUrlParser: true}
 );
 
+app.post("/crearUsuario", async (req, res) => {
+    const telefono = req.body.telefono;
+    const clave = req.body.clave;
+    const nombre = req.body.nombre;
+    const cedula = req.body.cedula;
+    const ubicacion = req.body.ubicacion;
+    const rol = req.body.rol;
+    const comercio = req.body.comercio;
+    const producto = new ModeloUsuario({telefono : telefono, clave:clave, nombre:nombre, cedula:cedula,ubicacion:ubicacion,rol:rol,comercio:comercio});
+    await producto.save()
+    res.send("Success");
+});
+
 app.post("/insert", async (req, res) => {
     const tel = req.body.tel;
     const tipo = req.body.tipo;
@@ -38,6 +51,29 @@ app.get("/read", async (req, res) => {
         }
     });
 });
+
+app.put("/update", async (req, res) => {
+    const newTel = req.body.newTel;
+    const id = req.body.id;
+    console.log(newTel, id);
+    try{
+        await ModeloProducto.findById(id, (error, productoUpdate) => {
+            productoUpdate.telefono = newTel;
+            productoUpdate.save();
+        });
+
+    } catch(err){
+        console.log(err); 
+    }
+
+    res.send("Updated");
+})
+
+app.delete("/delete/:id", async(req, res)=> {
+    const id = req.params.id;
+    await ModeloProducto.findByIdAndRemove(id).exec();
+    res.send("Deleted");
+})
 
 app.listen (3001, () => {
     console.log("You are connected!");

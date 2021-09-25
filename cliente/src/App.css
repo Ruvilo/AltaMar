@@ -11,7 +11,7 @@ body{
 }
 
 .inputs{
-  height: 400px;
+  height: 500px;
   width: 100%;
   background-color: brown;
   display: flex;
@@ -38,5 +38,9 @@ body{
 }
 
 .inputs button:hover{
+  cursor: pointer;
+}
+
+.consultarP button:hover{
   cursor: pointer;
 }

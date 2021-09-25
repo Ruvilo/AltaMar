@@ -12,6 +12,7 @@ function App() {
   const [localizacion, setLocalizacion] = useState("");
   const [estado, setEstado] = useState("");
   const [listOfProd, setListOfProd] = useState([]);
+  const [listOfCar, setListOfCar] = useState([]); 
   const addTel = () =>{
     Axios.post("http://localhost:3001/insert", {
       tel: tel,
@@ -21,26 +22,43 @@ function App() {
       fecha: fecha,
       localizacion: localizacion,
       estado: estado,
+    }).then((response) => {
+      const publicaciones = {tipo : tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado};
+      setListOfProd([...listOfProd, {_id: response.data._id, tel, publicaciones}]);
     });
   };
 
-//tipo
-//cantidad
-//precio
-//fecha
-//localizacion
-//estado
+  const updateProd = (id) => {
+    const newTel = prompt("Nuevo telefono: ");
+    Axios.put("http://localhost:3001/update", {newTel: newTel, id: id}).then(()=> {
+      // setListOfProd(listOfProd.map((val)=> {
+      //   return val._id === id ? {_id: id, telefono: val.telefono, publicaciones: val.publicaciones} : val;
+      // }))
+
+    })
+
+  };
+
+  const deleteProd = (id) => {
+    Axios.delete(`http://localhost:3001/delete/${id}`).then(()=> {
+      setListOfProd(listOfProd.filter((val)=> {
+        return val._id != id;
+      }));
+    });
+
+  };
+
 
   useEffect(() => {
     Axios.get("http://localhost:3001/read"
     ).then((response)=>{
       setListOfProd(response.data);
-      //console.log(response);
+      setListOfCar(response.data.publicaciones);
     }).catch(()=> {
       console.log("ERROR");
     });
 
-  }, [])
+  }, []);
   return (
     <div className="App">
       <div className="inputs">
@@ -81,6 +99,21 @@ function App() {
          onChange={(event)=>{setEstado(event.target.value)}}
         />
         <button onClick={addTel}>Add Data</button>
+        
+      </div>
+        <div className="consultarP">
+          {listOfProd.map((val)=>{
+            return (
+            <div>
+              
+              <h3><div>Telefono: {val.telefono}</div></h3>
+              <h3>{listOfCar.map((datos)=> <div> Tipo: {datos.tipo} <div>Estado: {datos.estado}</div></div>)}</h3> 
+              <button id="removeBtn" onClick={() => {deleteProd(val._id)}}>Delete</button>
+              <button onClick={() => {updateProd(val._id)}}>Update</button>
+            </div>
+            
+            );
+          })}
       </div>
     </div>
   );
