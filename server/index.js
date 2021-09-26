@@ -67,13 +67,44 @@ app.put("/update", async (req, res) => {
     }
 
     res.send("Updated");
-})
+});
 
 app.delete("/delete/:id", async(req, res)=> {
     const id = req.params.id;
     await ModeloProducto.findByIdAndRemove(id).exec();
     res.send("Deleted");
-})
+});
+
+app.post("/verificarNum", async (req, res) => {
+    const telefono = req.body.telefono;
+    ModeloUsuario.findOne({telefono:telefono},function(err,user){
+        
+        if(err){res.send(err);}
+        if(user){
+            res.send("True");
+        }
+        
+        else{res.send("False");}
+    })
+  });
+
+  app.post("/login", async (req, res) => {
+    const telefono = req.body.telefono;
+    const clave = req.body.clave;
+    
+    ModeloUsuario.findOne({telefono:telefono},function(err,user){
+        
+        if(err){res.send(err);}
+        if(user){
+            let compare = bcryptjs.compareSync(clave,user["clave"]);
+            if(compare){res.send("True");}
+            else{res.send("False");}
+        }
+        
+        else{res.send("False");}
+    })
+
+  });
 
 app.listen (3001, () => {
     console.log("You are connected!");
