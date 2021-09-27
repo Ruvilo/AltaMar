@@ -3,6 +3,8 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const ModeloProducto = require("./models/producto.js");
+const ModeloUsuario = require("./models/usuario.js");
+const bcryptjs = require("bcryptjs");
 
 app.use(cors())
 app.use(express.json())
@@ -14,7 +16,7 @@ mongoose.connect(
 
 app.post("/crearUsuario", async (req, res) => {
     const telefono = req.body.telefono;
-    const clave = req.body.clave;
+    let clave = await bcryptjs.hash(req.body.clave,8); 
     const nombre = req.body.nombre;
     const cedula = req.body.cedula;
     const ubicacion = req.body.ubicacion;
