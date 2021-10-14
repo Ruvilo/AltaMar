@@ -1,0 +1,19 @@
+{
+  "name": "altamar",
+  "version": "1.0.0",
+  "description": "Aplicación donde pescadores artesanales pueden publicar los productos para la venta y así los compradores puedan contactar con ellos para comprarles el producto.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ruvilo/AltaMar.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ruvilo/AltaMar/issues"
+  },
+  "homepage": "https://github.com/Ruvilo/AltaMar#readme"
+}

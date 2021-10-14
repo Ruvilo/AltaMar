@@ -54,6 +54,11 @@ app.get("/read", async (req, res) => {
     });
 });
 
+Model.
+  aggregate([{ $match: { age: { $gte: 21 }}}]).
+  unwind('tags').
+  exec(callback);
+
 app.put("/update", async (req, res) => {
     const newTel = req.body.newTel;
     const id = req.body.id;
@@ -75,6 +80,18 @@ app.delete("/delete/:id", async(req, res)=> {
     const id = req.params.id;
     await ModeloProducto.findByIdAndRemove(id).exec();
     res.send("Deleted");
+});
+
+app.get("/read/:id", async (req, res) => {
+    const id = req.params.id;
+    ModeloProducto.findOne({_id:id},function(err,user){
+        if(err){res.send(err);}
+        if(user){
+            res.send("True");
+        }
+        
+        else{res.send("False");}
+    })
 });
 
 app.post("/verificarNum", async (req, res) => {
