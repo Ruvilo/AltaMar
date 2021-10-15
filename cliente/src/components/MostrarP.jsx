@@ -4,15 +4,25 @@ import * as ReactBootstrap from "react-bootstrap";
 import {Link} from "react-router-dom";
 
 function MostrarP(){
-    const [prod, setProd] = useState({ producto: []})
-    const [guardaP, setGuardaP] = useState([{
-        tipo:'',
-        cantidad:'',
-        precio:'',
-        fecha:'',
-        localizacion:'',
-        estado:''
-    }])
+    const [prod, setProd] = useState({ producto: []});
+    const guarda = prod.producto.map( data => {
+            const obj = {publi: data.publicaciones};
+            return obj;        
+    });
+    
+
+    const guardaObj = guarda.map(item => {
+        const obj = {
+            tipo: item.tipo,
+            cantidad: item.cantidad,
+            precio: item.precio,
+            fecha: item.fecha,
+            localizacion: item.localizacion,
+            estado: item.estado
+        };
+        return obj;
+    })
+    
 
     useEffect(() => {
         const fetchPostList = async () => {
@@ -44,8 +54,8 @@ function MostrarP(){
 
 
     return <div className='container'>
-        <h1>55</h1>
-        {/*<ReactBootstrap.Table responsive>
+        {console.log(guarda)}
+        <ReactBootstrap.Table responsive>
             <thead>
                 <tr>
                 <th>id</th>
@@ -61,18 +71,16 @@ function MostrarP(){
             <tbody>
                 {
                     prod.producto && prod.producto.map((item) => (
-                        console.log(item.publicaciones),
-                        <tr key={item._id}><Link to = "/">
+                        <tr key={item.tel}><Link to = "/">
                             <td>{item._id}</td></Link><td>{item.telefono}</td>
-                        {item.publicaciones.map((sub) => (
-                            <><td>{sub.tipo}</td><td>{sub.cantidad}</td><td>{sub.precio}</td><td>{sub.fecha}</td><td>{sub.localizacion}</td><td>{sub.estado}</td></>
-                        ))}
+                        
                         
                             
                             
-                            {/*{item.publicaciones.map((datos) => (
-                                <td key={datos._id}>{datos.estado}</td> 
-                            ))}}
+                            {item.publicaciones.map((sub) => (
+                                <><td>{sub.tipo}</td><td>{sub.cantidad}</td><td>{sub.precio}</td><td>{sub.fecha}</td><td>{sub.localizacion}</td><td>{sub.estado}</td></>
+
+                            ))}
                             
                         </tr>
                         
@@ -81,7 +89,7 @@ function MostrarP(){
                 
                 
             </tbody>
-            </ReactBootstrap.Table>*/}
+            </ReactBootstrap.Table>
         {/*<h1>Datos</h1>*/}
         {/*<ReactBootstrap.Table striped bordered hover>
             <thead>

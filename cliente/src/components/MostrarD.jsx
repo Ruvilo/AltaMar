@@ -6,22 +6,26 @@ import {Link} from "react-router-dom";
 function MostrarD(){
     const [prod, setProd] = useState({ producto: []})
     const [guardaP, setGuardaP] = useState([{
-        tipo:'',
-        cantidad:'',
-        precio:'',
-        fecha:'',
-        localizacion:'',
-        estado:''
+        telefono:'',
+        publicaciones: [{
+            tipo:'',
+            cantidad:'',
+            precio:'',
+            fecha:'',
+            localizacion:'',
+            estado:''
+        }]
+        
     }])
 
     useEffect(() => {
         const fetchPostList = async () => {
             const {data} = await axios("http://localhost:3001/read")
-            setProd({producto: data})
+            setGuardaP(data)
         }
         fetchPostList()
 
-    }, [setProd])
+    }, [setGuardaP])
 
     {/*useEffect(() => {
         axios.get("http://localhost:3001/read"
@@ -59,13 +63,13 @@ function MostrarD(){
             </thead>
             <tbody>
                 {
-                    prod.producto && prod.producto.map((item) => (
+                    guardaP.map((item) => (
                         console.log(item.publicaciones),
                         <tr key={item._id}>
                             <td>{item._id}</td>
                             <td>{item.telefono}</td>
                             <td>
-                                <Link to = "/MostrarP"><button onClick={() => {console.log(item._id)}}>Ver Productos</button></Link>
+                                <Link to = "/MostrarP/10"><button onClick={() => {console.log(item._id)}}>Ver Productos</button></Link>
                             </td>
                         {item.publicaciones.map((sub) => (
                             <><td>{sub.tipo}</td><td>{sub.cantidad}</td><td>{sub.precio}</td><td>{sub.fecha}</td><td>{sub.localizacion}</td><td>{sub.estado}</td></>
