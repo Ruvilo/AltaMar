@@ -13,8 +13,8 @@ function App() {
   const [estado, setEstado] = useState("");
   const [listOfProd, setListOfProd] = useState([]);
   //const [listOfCar, setListOfCar] = useState([]); 
-  const addTel = () =>{
-    Axios.post("http://localhost:3001/insert", {
+  const addProd = () =>{
+    Axios.post("http://localhost:3001/insertaProducto", {
       tel: tel,
       tipo: tipo, 
       cantidad: cantidad,
@@ -48,7 +48,6 @@ function App() {
     });
 
   };
-
   useEffect(() => {
     Axios.get("http://localhost:3001/read"
     ).then((response)=>{
@@ -98,7 +97,7 @@ function App() {
          placeholder="Estado"
          onChange={(event)=>{setEstado(event.target.value)}}
         />
-        <button onClick={addTel}>Add Data</button>
+        <button onClick={addProd}>Add Data</button>
         
       </div>
         <div className="consultarP">
