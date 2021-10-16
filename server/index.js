@@ -134,6 +134,18 @@ app.post("/verificarNum", async (req, res) => {
     })
   });
 
+  app.post("/verificarProducto", async (req, res) => {
+    const telefono = req.body.telefono;
+    ModeloProducto.find({telefono:telefono},function(err,result){
+        if (err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+        }
+    })
+  });
+
   app.post("/insertaProducto", async (req, res) => {
     const telefono = req.body.telefono;
     const tipo = req.body.tipo;
@@ -184,6 +196,37 @@ app.post("/verificarNum", async (req, res) => {
         else{res.send("False");}
     })
 
+  });
+  app.post("/insertaProducto", async (req, res) => {
+    const telefono = req.body.telefono;
+    const tipo = req.body.tipo;
+    const cantidad = req.body.cantidad;
+    const precio = req.body.precio;
+    const fecha = req.body.fecha;
+    const localizacion = req.body.localizacion;
+    const estado = req.body.estado;
+    const publicaciones = {tipo : tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado};
+    ModeloProducto.findOne({telefono:telefono},function(err,user){
+        if(err){res.send(err);}
+        if(user){ // el usuario ya tiene almenos 1 publicacion 
+            ModeloProducto.findOneAndUpdate(
+                { telefono : telefono}, 
+                { $push: {
+                    publicaciones: publicaciones}},
+               function (error, success) {
+                     if (error) {
+                        res.send("False");
+                     } else {
+                        res.send("True");
+                     }
+                 }); 
+        }
+        else{//no hay publicaciones
+            const producto = new ModeloProducto({telefono: telefono, publicaciones: publicaciones});
+             producto.save();
+            res.send("True");
+        }
+    })
   });
 
 app.listen (3001, () => {
