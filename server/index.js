@@ -74,6 +74,17 @@ app.get("/read/peces", async (req, res) => {
     });
 });
 
+app.get("/read/top", async (req, res) => {
+    ModeloPez.find({}, {nombre:1, _id:0}, {sort: {'clicks':-1},  limit: 3}, function(err, result) {
+        if (err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+            console.log(result);
+        }
+    });
+});
 
 app.put("/update", async (req, res) => {
     const newTel = req.body.newTel;
@@ -176,5 +187,5 @@ app.post("/verificarNum", async (req, res) => {
   });
 
 app.listen (3001, () => {
-    console.log("You are connected!");
+    console.log("Conectado");
 });
