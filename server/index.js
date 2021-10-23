@@ -142,8 +142,8 @@ app.post("/verificarNum", async (req, res) => {
     const precio = req.body.precio;
     const fecha = req.body.fecha;
     const localizacion = req.body.localizacion;
-    const estado = req.body.estado;
-    const publicaciones = {tipo : tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado};
+    const vendido = req.body.vendido;
+    const publicaciones = {tipo : tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, vendido: vendido};
     ModeloProducto.findOne({telefono:telefono},function(err,user){
         if(err){res.send(err);}
         if(user){ // el usuario ya tiene almenos 1 publicacion
