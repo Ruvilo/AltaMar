@@ -1,6 +1,19 @@
 const mongoose = require("mongoose");
 
-
+const redesSociales = new mongoose.Schema({
+    whatsapp:{
+        type:String,
+        required:false,
+    },
+    telegram:{
+        type:String,
+        required:false
+    },
+    simpe:{
+        type:String,
+        required:false
+    },
+});
 
 const EsquemaUsuario = new mongoose.Schema({
     telefono:{
@@ -31,13 +44,13 @@ const EsquemaUsuario = new mongoose.Schema({
         type:String,
         required:false,
     },
-    comercio:{
-        type:String,
+    redesSociales:{
+        type:[redesSociales],
         required:false,
-    }
+    },
 });
 
 
 
-const ModeloProducto = mongoose.model('usuario',EsquemaUsuario);
-module.exports = ModeloProducto; 
+const ModeloUsuario = mongoose.model('usuario',EsquemaUsuario);
+module.exports = ModeloUsuario; 
