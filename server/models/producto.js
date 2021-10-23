@@ -21,8 +21,8 @@ const ProductoVenta = new mongoose.Schema({
         type:String,
         required:false,
     },
-    estado:{
-        type:String,
+    vendido:{
+        type:Boolean,
         required:true,
     }
 });
