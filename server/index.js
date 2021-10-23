@@ -41,6 +41,58 @@ app.post("/insertaPez", async (req, res) => {
     await producto.save()
     res.send("Success");
 });
+ app.post("/InsertaFav", async (req, res) => {
+    const telefono = req.body.telefono;
+    const favorito = req.body.favorito; // object id de usuario
+    ModeloUsuario.findOne({telefono:telefono},function(err,user){
+        
+        if(err){res.send(err);}
+        if(user){
+            //console.log(telefono);    
+            ModeloUsuario.findOneAndUpdate(
+                { telefono : telefono}, 
+                { $push: {
+                    favoritos: favorito}},
+                    function (error, success) {
+                     if (error) {
+                        res.send("False");
+                     } else {
+                        res.send("True");
+                     }
+                 }); 
+
+        }
+        else{res.send("ERROR");}
+    })
+  });
+
+
+app.post("/InsertaFavProd", async (req, res) => {
+    const telefono = req.body.telefono;
+    const favorito = req.body.favorito; //obj id de publicacion 
+    ModeloProducto.findOne({telefono:telefono},function(err,user){
+        
+        if(err){res.send(err);}
+        if(user){
+            //console.log(telefono);    
+            ModeloProducto.findOneAndUpdate(
+                { telefono : telefono}, 
+                { $push: {
+                    favoritos: favorito}},
+                    function (error, success) {
+                       // console.log(success);
+                     if (error) {
+                        res.send("False");
+                     } else {
+                        res.send("True");
+                     }
+                 }); 
+
+        }
+        else{res.send("ERROR");}
+    })
+  });
+
 
 app.post("/insert", async (req, res) => {
     const tel = req.body.tel;
@@ -87,7 +139,7 @@ app.get("/read/top", async (req, res) => {
         }
         else{
             res.send(result);
-            console.log(result);
+            //console.log(result);
         }
     });
 });
@@ -95,7 +147,7 @@ app.get("/read/top", async (req, res) => {
 app.put("/update", async (req, res) => {
     const newTel = req.body.newTel;
     const id = req.body.id;
-    console.log(newTel, id);
+    //console.log(newTel, id);
     try {
         await ModeloProducto.findById(id, (error, productoUpdate) => {
             productoUpdate.telefono = newTel;
@@ -214,6 +266,64 @@ app.put("/editarProducto", async (req, res) => {
     res.send("Updated");
 });
 
+app.get("/getFavProd/:telefono", async (req, res) => {
+    const telefono = req.params.telefono;
+    var dict  ={};
+    ModeloProducto.findOne({telefono:telefono},{favoritos: 1, _id: 0},function(err,user){
+        
+        if(err){res.send(err);}
+        if(user){
+
+            ModeloProducto.aggregate([
+                {$unwind:"$publicaciones"},{$match:{"publicaciones._id":{ $in:user.favoritos}}}
+                 
+            ],function(err,user){
+                if(err){res.send(err);}
+                    if(user){
+                        user.map(function(i) {
+                            
+                            //console.log(i);
+                            
+                            
+                        });
+                        res.send("True")
+
+                    }
+                }
+            
+            )
+
+
+        }
+        
+        else{res.send("False");}
+    })
+  });
+
+app.get("/getFav/:telefono", async (req, res) => {
+    const telefono = req.params.telefono;
+    ModeloUsuario.findOne({telefono:telefono},{favoritos: 1, _id: 0},function(err,user){
+        
+        if(err){res.send(err);}
+        if(user){
+
+            ModeloUsuario.find({ "_id":{ $in:user.favoritos}},{nombre: 1,telefono:1, _id: 0},function(err,user){
+        
+                if(err){res.send(err);}
+                if(user){
+                    //console.log(user);
+                    res.send(user);
+                }
+                
+                else{res.send("False");}
+            }).sort({nombre:1})
+
+
+        }
+        
+        else{res.send("False");}
+    })
+  });
 
 
 app.post("/login", async (req, res) => {

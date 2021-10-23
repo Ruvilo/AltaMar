@@ -1,4 +1,8 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema
+
+const ObjectId = Schema.Types.ObjectId
+
 
 const redesSociales = new mongoose.Schema({
     whatsapp:{
@@ -48,6 +52,14 @@ const EsquemaUsuario = new mongoose.Schema({
         type:[redesSociales],
         required:false,
     },
+    comercio:{
+        type:String,
+        required:false,
+    },
+    favoritos:{
+        type:[ObjectId],
+        required:false,
+    }
 });
 
 

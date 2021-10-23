@@ -22,5 +22,5 @@ const EsquemaPez = new mongoose.Schema({
 
 
 
-const ModeloPez = mongoose.model('pez',EsquemaPez);
+const ModeloPez = mongoose.model('pece',EsquemaPez);
 module.exports = ModeloPez; 

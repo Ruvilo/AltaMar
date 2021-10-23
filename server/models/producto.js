@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema
 
+const ObjectId = Schema.Types.ObjectId
 const ProductoVenta = new mongoose.Schema({
     tipo:{
         type:String,
@@ -21,8 +23,8 @@ const ProductoVenta = new mongoose.Schema({
         type:String,
         required:false,
     },
-    vendido:{
-        type:Boolean,
+    estado:{
+        type:String,
         required:true,
     }
 });
@@ -35,6 +37,10 @@ const EsquemaProducto = new mongoose.Schema({
     },
     publicaciones:{
         type:[ProductoVenta],
+        required:false,
+    },
+    favoritos:{
+        type:[ObjectId],
         required:false,
     }
 });
