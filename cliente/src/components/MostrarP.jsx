@@ -1,37 +1,112 @@
-import React, {useEffect, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import axios from "axios";
 import * as ReactBootstrap from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {List, Datagrid, TextField, EditButton, DeleteButton} from 'react-admin';
+import ReadPez from "./ReadPez";
+import EditPez from "./EditPez";
 
 function MostrarP(){
-    const [prod, setProd] = useState({ producto: []});
-    const guarda = prod.producto.map( data => {
-            const obj = {publi: data.publicaciones};
-            return obj;        
-    });
-    
+    const [peces, setPeces] = useState([])
+    const [nombre, setNombre] = useState("")
+    const [foto, setFoto] = useState("")
 
-    const guardaObj = guarda.map(item => {
-        const obj = {
-            tipo: item.tipo,
-            cantidad: item.cantidad,
-            precio: item.precio,
-            fecha: item.fecha,
-            localizacion: item.localizacion,
-            estado: item.estado
-        };
-        return obj;
-    })
+    const [addFormData, setAddFormData] = useState({
+        nombre: "",
+        foto: "",
+      });
     
+    const [editFormData, setEditFormData] = useState({
+        nombre: "",
+        foto: "",
+      });
+    
+      const [editPezId, setEditPezId] = useState("");
+    
+      const AgregarP = (event) => {
+        event.preventDefault();
+        
+        console.log(nombre, foto)
+        axios.post("http://localhost:3001/insertaPez", {
+            nombre: addFormData.nombre,
+            foto: addFormData.foto,
+            }).then((response) => {
+                console.log(response)
+            });
+        //setAddFormData(newFormData);
+      };
+    
+      const handleEditFormChange = (event) => {
+        event.preventDefault();
+    
+        const fieldName = event.target.getAttribute("name");
+        const fieldValue = event.target.value;
+    
+        const newFormData = { ...editFormData };
+        newFormData[fieldName] = fieldValue;
+    
+        setEditFormData(newFormData);
+      };
+    
+      const handleAddFormChange = (event) => {
+        event.preventDefault();
+    
+        const fieldName = event.target.getAttribute("name");
+        const fieldValue = event.target.value;
+    
+        const newFormData = { ...addFormData };
+        newFormData[fieldName] = fieldValue;
+    
+        setAddFormData(newFormData);
+    
+      };
+    
+      const handleEditFormSubmit = (event) => {
+        event.preventDefault();
+        console.log(editPezId);
+        axios.put("http://localhost:3001/editarPez", {
+            id : editPezId,
+            nombre: editFormData.nombre,
+            foto: editFormData.foto,
+            }).then((response) => {
+                console.log(response)
+        });
+        window.location.reload();
+
+      };
+    
+      const handleEditClick = (event, peces) => {
+        event.preventDefault();
+        setEditPezId(peces._id);   
+        const formValues = {
+          nombre: peces.nombre,
+          foto: peces.foto,
+        };
+    
+        setEditFormData(formValues);
+      };
+
+      const handleDeleteClick = (pezId) => {
+          console.log(pezId);
+        axios.delete(`http://localhost:3001/deletePez/${pezId}`).then((response) => {
+                console.log(response)
+        });
+          window.location.reload();
+        
+      };
+
+      const handleCancelClick = () => {
+        setEditPezId("");
+      };
 
     useEffect(() => {
         const fetchPostList = async () => {
-            const {data} = await axios("http://localhost:3001/read")
-            setProd({producto: data})
+            const {data} = await axios("http://localhost:3001/readPeces")
+            setPeces(data)
         }
         fetchPostList()
 
-    }, [setProd])
+    }, [setPeces])
 
     {/*useEffect(() => {
         axios.get("http://localhost:3001/read"
@@ -43,46 +118,30 @@ function MostrarP(){
         });
     
       }, []);*/}
-
-      const renderProd = (producto) => {
-          return(
-              <tr key="index">
-                  <th></th>
-              </tr>
-          )
-      }
-
-
     return <div className='container'>
-        {console.log(guarda)}
+        <form onSubmit={handleEditFormSubmit}>
         <ReactBootstrap.Table responsive>
             <thead>
                 <tr>
-                <th>id</th>
-                <th>Tel</th>
-                <th>Tipo</th>
-                <th>cantidad</th>
-                <th>precio</th>
-                <th>fecha</th>
-                <th>localizacion</th>
-                <th>estado</th>
+                    <th>Nombre</th>
+                    <th>Ruta de la Imagen</th>
                 </tr>
             </thead>
             <tbody>
                 {
-                    prod.producto && prod.producto.map((item) => (
-                        <tr key={item.tel}><Link to = "/">
-                            <td>{item._id}</td></Link><td>{item.telefono}</td>
+                    peces.map((item) => (
+                        <Fragment key={item._id}>
+                            { editPezId === item._id ?
+                                (<EditPez editFormData={editFormData} 
+                                    handleEditFormChange={handleEditFormChange}
+                                    handleCancelClick={handleCancelClick}/>):
+                                (<ReadPez peces={item} 
+                                    handleEditClick={handleEditClick}
+                                    handleDeleteClick={handleDeleteClick}/>)
+                            }
+                            
+                        </Fragment>
                         
-                        
-                            
-                            
-                            {item.publicaciones.map((sub) => (
-                                <><td>{sub.tipo}</td><td>{sub.cantidad}</td><td>{sub.precio}</td><td>{sub.fecha}</td><td>{sub.localizacion}</td><td>{sub.estado}</td></>
-
-                            ))}
-                            
-                        </tr>
                         
                     ))
                 }
@@ -90,20 +149,25 @@ function MostrarP(){
                 
             </tbody>
             </ReactBootstrap.Table>
-        {/*<h1>Datos</h1>*/}
-        {/*<ReactBootstrap.Table striped bordered hover>
-            <thead>
-                <tr>
-                    <th>Tel</th>
-                    <th>Tipo</th>
-                </tr>
-            </thead>
-            <tbody>
-                {prod.map(mostrarDatos)}
-
-            </tbody>
-        </ReactBootstrap.Table>*/}
-        
+            </form>
+            <h2>Agregar Pescado</h2>
+                <form onSubmit={AgregarP}>
+                    <input
+                    type="text"
+                    name="nombre"
+                    required="required"
+                    placeholder="Enter a name..."
+                    onChange={handleAddFormChange}
+                    />
+                    <input
+                    type="text"
+                    name="foto"
+                    required="required"
+                    placeholder="Enter an addres..."
+                    onChange={handleAddFormChange}
+                    />
+                    <button type="submit">Add</button>
+                </form>
     </div>
 }
 

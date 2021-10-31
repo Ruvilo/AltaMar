@@ -34,13 +34,7 @@ app.post("/crearUsuario", async (req, res) => {
     res.send("Success");
 });
 
-app.post("/insertaPez", async (req, res) => {
-    const nombre = req.body.nombre;
-    const foto = req.body.foto;
-    const producto = new ModeloPez({nombre:nombre, foto:foto});
-    await producto.save()
-    res.send("Success");
-});
+
  app.post("/InsertaFav", async (req, res) => {
     const telefono = req.body.telefono;
     const favorito = req.body.favorito; // object id de usuario
@@ -121,7 +115,15 @@ app.get("/read", async (req, res) => {
     });
 });
 
-app.get("/read/peces", async (req, res) => {
+app.post("/insertaPez", async (req, res) => {
+    const nombre = req.body.nombre;
+    const foto = req.body.foto;
+    const producto = new ModeloPez({nombre:nombre, foto:foto});
+    await producto.save()
+    res.send("Success");
+});
+
+app.get("/readPeces", async (req, res) => {
     ModeloPez.find({}, (err, result) => {
         if (err){
             res.send(err);
@@ -132,7 +134,7 @@ app.get("/read/peces", async (req, res) => {
     });
 });
 
-app.get("/read/top", async (req, res) => {
+app.get("/readTop", async (req, res) => {
     ModeloPez.find({}, {nombre:1, _id:0}, {sort: {'clicks':-1},  limit: 3}, function(err, result) {
         if (err){
             res.send(err);
@@ -142,6 +144,37 @@ app.get("/read/top", async (req, res) => {
             //console.log(result);
         }
     });
+});
+
+app.delete("/deletePez/:id", async (req, res) => {
+    const id = req.params.id;
+    ModeloPez.findByIdAndDelete(req.params.id).then(data => {
+        if(!blog){
+            return res.status(404).send();
+        }
+        res.send(data);
+    }).catch(error => {
+        res.status(500).send(error);
+    })
+});
+
+app.put("/editarPez", async (req, res) => {
+    const id = req.body.id;
+    const nombre = req.body.nombre;
+    const foto = req.body.foto;
+    await ModeloPez.updateMany({ _id: id },
+        {
+            $set:
+            {
+                nombre : nombre,
+                foto: foto,
+            }
+        }, function (error, productoUpdate) {
+            if (error) { res.send("Failed") }
+            else { res.send("Updated") }
+        });
+
+    res.send("Updated");
 });
 
 app.put("/update", async (req, res) => {

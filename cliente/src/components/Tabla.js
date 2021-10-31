@@ -5,6 +5,8 @@ import Home from "./Home";
 import MostrarD from "./MostrarD";
 import InsertarP from "./InsertarP";
 import MostrarP from "./MostrarP";
+import {Admin, Resource} from 'react-admin';
+import restProvider from 'ra-data-simple-rest';
 function Tabla(){
     return (
     <Router>
@@ -22,7 +24,7 @@ function Tabla(){
             <InsertarP />
         </Route>
 
-        <Route path="/mostrarP/:id">
+        <Route path="/mostrarP">
             <MostrarP />
         </Route>
     </Router>
