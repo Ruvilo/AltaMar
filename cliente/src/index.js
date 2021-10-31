@@ -1,13 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Login from './components/login';
 import Tabla from './components/Tabla';
 //import App from './App';
 import 'bootstrap/dist/css/bootstrap.css';
 import reportWebVitals from './reportWebVitals';
+import I from "./components/file2url"
 
 ReactDOM.render(
   <React.StrictMode>
-    <Tabla />
+    {/*<Tabla />*/}
+    {/*<Login/>*/}
+    <I/>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/Ruvilo/AltaMar/issues"
   },
-  "homepage": "https://github.com/Ruvilo/AltaMar#readme"
+  "homepage": "https://github.com/Ruvilo/AltaMar#readme",
+  "dependencies": {
+    "file-url": "^4.0.0",
+    "multer": "^1.4.3"
+  }
 }
