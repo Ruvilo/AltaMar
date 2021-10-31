@@ -115,6 +115,17 @@ app.get("/read", async (req, res) => {
     });
 });
 
+{/*app.get("/read/:id", async (req, res) => {
+    await ModeloProducto.find({_id: req.body.id}, {publicaciones:1, _id:0}, function(err, result) {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.send(result);
+        }
+    });
+});*/}
+
 app.post("/insertaPez", async (req, res) => {
     const nombre = req.body.nombre;
     const foto = req.body.foto;
@@ -202,10 +213,10 @@ app.delete("/delete/:id", async (req, res) => {
 
 app.get("/read/:id", async (req, res) => {
     const id = req.params.id;
-    ModeloProducto.findOne({_id:id},function(err,user){
+    await ModeloProducto.findById(req.params.id, {publicaciones:1, _id:0},function(err,user){
         if(err){res.send(err);}
         if(user){
-            res.send("True");
+            res.send(user);
         }
         
         else{res.send("False");}

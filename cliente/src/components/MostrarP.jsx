@@ -8,8 +8,6 @@ import EditPez from "./EditPez";
 
 function MostrarP(){
     const [peces, setPeces] = useState([])
-    const [nombre, setNombre] = useState("")
-    const [foto, setFoto] = useState("")
 
     const [addFormData, setAddFormData] = useState({
         nombre: "",
@@ -25,15 +23,12 @@ function MostrarP(){
     
       const AgregarP = (event) => {
         event.preventDefault();
-        
-        console.log(nombre, foto)
         axios.post("http://localhost:3001/insertaPez", {
             nombre: addFormData.nombre,
             foto: addFormData.foto,
             }).then((response) => {
                 console.log(response)
             });
-        //setAddFormData(newFormData);
       };
     
       const handleEditFormChange = (event) => {
@@ -108,16 +103,6 @@ function MostrarP(){
 
     }, [setPeces])
 
-    {/*useEffect(() => {
-        axios.get("http://localhost:3001/read"
-        ).then((response)=>{
-          setProd(response.data);
-          console.log(prod.publicaciones);
-        }).catch(()=> {
-          console.log("ERROR");
-        });
-    
-      }, []);*/}
     return <div className='container'>
         <form onSubmit={handleEditFormSubmit}>
         <ReactBootstrap.Table responsive>
