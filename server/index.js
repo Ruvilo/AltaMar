@@ -214,14 +214,16 @@ app.delete("/delete/:id", async (req, res) => {
 app.get("/read/:id", async (req, res) => {
     const id = req.params.id;
     await ModeloProducto.findById(req.params.id, {publicaciones:1, _id:0},function(err,user){
-        if(err){res.send(err);}
         if(user){
             res.send(user);
         }
+        else{
+            res.send(error);
+        }
         
-        else{res.send("False");}
-    })
-});
+    }
+    
+)});
 
 app.post("/verificarNum", async (req, res) => {
     const telefono = req.body.telefono;

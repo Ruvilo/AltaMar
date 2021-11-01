@@ -7,6 +7,7 @@ import InsertarP from "./InsertarP";
 import MostrarP from "./MostrarP";
 import {Admin, Resource} from 'react-admin';
 import restProvider from 'ra-data-simple-rest';
+import MostrarPub from "./MostrarPub";
 function Tabla(){
     return (
     <Router>
@@ -26,6 +27,10 @@ function Tabla(){
 
         <Route path="/mostrarP">
             <MostrarP />
+        </Route>
+
+        <Route path="/mostrarPub">
+            <MostrarPub />
         </Route>
     </Router>
     )

@@ -1,26 +1,38 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import * as ReactBootstrap from "react-bootstrap";
-import {Link} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-function MostrarD(){
-    const [prod, setProd] = useState({ producto: []})
-    const [guardaP, setGuardaP] = useState([{
-        publicaciones: [{
+
+
+
+function MostrarPub(){
+    const [prod, setProd] = useState([])
+    const location = useLocation()
+    //const {id} = location.state 
+    const [guardaP, setGuardaP] = useState({
+        
             tipo:'',
             cantidad:'',
             precio:'',
             fecha:'',
             localizacion:'',
             estado:''
-        }]
         
-    }])
+    })
 
     useEffect(() => {
+        
         const fetchPostList = async () => {
-            const {data} = await axios("http://localhost:3001/read")
-            setGuardaP(data)
+            try {
+                const {data} = await axios("http://localhost:3001/read/614eb0b2ee93e629974bb7aa")
+                setGuardaP(data)
+                //setProd(data)
+                console.log(prod)
+            } catch (error) {
+                
+            }
+            
         }
         fetchPostList()
 
@@ -38,28 +50,28 @@ function MostrarD(){
       }, []);*/}
 
 
-
     return <div className='container'>
         <ReactBootstrap.Table responsive>
             <thead>
                 <tr>
-                <th>id</th>
-                <th>Tel</th>
-                <th>Opciones</th>
-
+                    <th>Tipo</th>
+                    <th>cantidad</th>
+                    <th>precio</th>
+                    <th>fecha</th>
+                    <th>localizacion</th>
+                    <th>estado</th>
                 </tr>
             </thead>
             <tbody>
-                {
-                    guardaP.map((item) => (
-                        console.log(item.publicaciones),
+                <tr><td>lll</td>
+                {/*
+                    prod.map((item) => (
+                        //console.log(item.publicaciones),
                         <tr key={item._id}>
-                            <td>{item._id}</td>
-                            <td>{item.telefono}</td>
-                            <td>
-                                <Link to = '/MostrarPub' state={{id:item._id}}><button onClick={() => {console.log(item._id)}}>Ver Productos</button></Link>
-                            </td>
-                        {/*item.publicaciones.map((sub) => (
+                            <td>{item.tipo}</td>
+                            <td>{item.cantidad}</td>
+                            
+                        {item.publicaciones.map((sub) => (
                             <><td>{sub.tipo}</td><td>{sub.cantidad}</td><td>{sub.precio}</td><td>{sub.fecha}</td><td>{sub.localizacion}</td><td>{sub.estado}</td></>
                         ))}
                         
@@ -72,7 +84,6 @@ function MostrarD(){
                         </tr>
                         
                     ))
-                }
                 
                 
             </tbody>
@@ -94,4 +105,4 @@ function MostrarD(){
     </div>
 }
 
-export default MostrarD;
+export default MostrarPub;
