@@ -34,6 +34,53 @@ app.post("/crearUsuario", async (req, res) => {
     res.send("Success");
 });
 
+app.get("/readUser", async (req, res) => {
+    ModeloUsuario.find({}, (err, result) => {
+        if (err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+        }
+    });
+});
+
+app.put("/editarUsuario", async (req, res) => {
+    const id = req.body.id;
+    const nombre = req.body.nombre;
+    let clave = await bcryptjs.hash(req.body.clave, 8); 
+    const cedula = req.body.cedula;
+    const ubicacion = req.body.ubicacion;
+    const rol = req.body.rol;
+    await ModeloUsuario.updateMany({ _id: id },
+        {
+            $set:
+            {
+                'nombre' : nombre,
+                'clave': clave,
+                'cedula': cedula,
+                'ubicacion': ubicacion,
+                'rol':rol
+            }
+        }, function (error, productoUpdate) {
+            if (error) { res.send("Failed") }
+            else { 
+                res.send("Updated");
+            }
+        }
+)});
+
+app.delete("/deleteUser/:id", async (req, res) => {
+    const id = req.params.id;
+    ModeloUsuario.findByIdAndDelete(req.params.id).then(data => {
+        if(!blog){
+            return res.status(404).send();
+        }
+        res.send(data);
+    }).catch(error => {
+        res.status(500).send(error);
+    })
+});
 
  app.post("/InsertaFav", async (req, res) => {
     const telefono = req.body.telefono;
