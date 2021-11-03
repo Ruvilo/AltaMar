@@ -57,7 +57,7 @@ function MostrarD(){
                             <td>{item._id}</td>
                             <td>{item.telefono}</td>
                             <td>
-                                <Link to = '/MostrarPub' state={{id:item._id}}><button onClick={() => {console.log(item._id)}}>Ver Productos</button></Link>
+                                <Link to = '/MostrarU' state={{id:item._id}}><button onClick={() => {console.log(item._id)}}>Ver Productos</button></Link>
                             </td>
                         {/*item.publicaciones.map((sub) => (
                             <><td>{sub.tipo}</td><td>{sub.cantidad}</td><td>{sub.precio}</td><td>{sub.fecha}</td><td>{sub.localizacion}</td><td>{sub.estado}</td></>

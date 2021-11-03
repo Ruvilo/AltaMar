@@ -8,6 +8,7 @@ import MostrarP from "./MostrarP";
 import {Admin, Resource} from 'react-admin';
 import restProvider from 'ra-data-simple-rest';
 import MostrarPub from "./MostrarPub";
+import MostrarU from "./MostrarU";
 function Tabla(){
     return (
     <Router>
@@ -31,6 +32,10 @@ function Tabla(){
 
         <Route path="/mostrarPub">
             <MostrarPub />
+        </Route>
+
+        <Route path="/mostrarU">
+            <MostrarU />
         </Route>
     </Router>
     )
