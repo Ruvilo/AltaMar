@@ -4,9 +4,7 @@ import Navbar from "./Navbar";
 import Home from "./Home";
 import MostrarD from "./MostrarD";
 import InsertarP from "./InsertarP";
-import MostrarP from "./MostrarP";
-import {Admin, Resource} from 'react-admin';
-import restProvider from 'ra-data-simple-rest';
+import MostrarPez from "./MostrarPez";
 import MostrarPub from "./MostrarPub";
 import MostrarU from "./MostrarU";
 function Tabla(){
@@ -26,8 +24,8 @@ function Tabla(){
             <InsertarP />
         </Route>
 
-        <Route path="/mostrarP">
-            <MostrarP />
+        <Route path="/mostrarPez">
+            <MostrarPez />
         </Route>
 
         <Route path="/mostrarPub">

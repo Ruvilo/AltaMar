@@ -11,10 +11,10 @@ const EditUser = ({
       <td>
         <input
           type="text"
-          required="required"
-          placeholder="Nuevo nombre"
-          name="nombre"
-          value={editFormData.nombre}
+          disabled={true}
+          placeholder="Nuevo Tipo"
+          name="tipo"
+          value={editFormData.tipo}
           onChange={handleEditFormChange}
         ></input>
       </td>
@@ -22,9 +22,9 @@ const EditUser = ({
         <input
           type="text"
           required="required"
-          placeholder="Nueva clave"
-          name="clave"
-          value={editFormData.clave}
+          placeholder="Nueva Cantidad"
+          name="cantidad"
+          value={editFormData.cantidad}
           onChange={handleEditFormChange}
         ></input>
       </td>
@@ -32,19 +32,19 @@ const EditUser = ({
         <input
           type="text"
           required="required"
-          placeholder="Nueva cedula"
-          name="cedula"
-          value={editFormData.cedula}
+          placeholder="Nuevo Precio"
+          name="precio"
+          value={editFormData.precio}
           onChange={handleEditFormChange}
         ></input>
       </td>
       <td>
         <input
-          type="text"
+          type="date"
           required="required"
-          placeholder="Nueva ubicacion"
+          placeholder="Nueva Fecha"
           name="ubicacion"
-          value={editFormData.ubicacion}
+          value={editFormData.fecha}
           onChange={handleEditFormChange}
         ></input>
       </td>
@@ -52,9 +52,19 @@ const EditUser = ({
         <input
           type="text"
           required="required"
-          placeholder="Nuevo rol"
-          name="rol"
-          value={editFormData.rol}
+          placeholder="Nueva Localizacion"
+          name="localizacion"
+          value={editFormData.localizacion}
+          onChange={handleEditFormChange}
+        ></input>
+      </td>
+      <td>
+        <input
+          type="text"
+          required="required"
+          placeholder="Nuevo Estado"
+          name="estado"
+          value={editFormData.estado}
           onChange={handleEditFormChange}
         ></input>
       </td>
