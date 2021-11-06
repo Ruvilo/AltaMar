@@ -28,6 +28,7 @@ function MostrarU(){
       });
     
       const [editUserId, setEditUserId] = useState("");
+      const [editUserTel, setEditUserTel] = useState("");
     
       const AgregarP = (event) => {
         event.preventDefault();
@@ -76,7 +77,7 @@ function MostrarU(){
         event.preventDefault();
         console.log(editUserId);
         axios.put("http://localhost:3001/editarUsuario", {
-              id : editUserId,
+              telefono : editUserTel,
               nombre: editFormData.nombre,
               clave:editFormData.clave,
               cedula:editFormData.cedula,
@@ -91,6 +92,7 @@ function MostrarU(){
       const handleEditClick = (event, user) => {
         event.preventDefault();
         setEditUserId(user._id);   
+        setEditUserTel(user.telefono);
         const formValues = {
           nombre: user.nombre,
           clave:user.clave,

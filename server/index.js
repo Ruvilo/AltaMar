@@ -46,13 +46,13 @@ app.get("/readUser", async (req, res) => {
 });
 
 app.put("/editarUsuario", async (req, res) => {
-    const id = req.body.id;
+    const telefono = req.body.telefono;
     const nombre = req.body.nombre;
     let clave = await bcryptjs.hash(req.body.clave, 8); 
     const cedula = req.body.cedula;
     const ubicacion = req.body.ubicacion;
     const rol = req.body.rol;
-    await ModeloUsuario.updateMany({ _id: id },
+    await ModeloUsuario.updateMany({ telefono: telefono },
         {
             $set:
             {
@@ -235,6 +235,54 @@ app.put("/editarPez", async (req, res) => {
     res.send("Updated");
 });
 
+
+app.put("/aumentarPez", async (req, res) => {
+    const nombre = req.body.nombre;
+    ModeloPez.findOneAndUpdate({ nombre: nombre },{$inc: {clicks: 1}}, function (error, success) {
+        if (error) {
+            res.send("False");
+        } else {
+            res.send("True");
+        }
+    });
+});
+         
+
+app.post("/insertaProducto", async (req, res) => {
+    const telefono = req.body.telefono;
+    const tipo = req.body.tipo;
+    const cantidad = req.body.cantidad;
+    const precio = req.body.precio;
+    const fecha = req.body.fecha;
+    const localizacion = req.body.localizacion;
+    const estado = req.body.estado;
+    const publicaciones = { tipo: tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado };
+    ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
+        if (err) { res.send(err); }
+        if (user) { // el usuario ya tiene almenos 1 publicacion
+            ModeloProducto.findOneAndUpdate(
+                { telefono: telefono },
+                {
+                    $push: {
+                        publicaciones: publicaciones
+                    }
+                },
+                function (error, success) {
+                    if (error) {
+                        res.send("False");
+                    } else {
+                        res.send("True");
+                    }
+                });
+        }
+        else {//no hay publicaciones
+            const producto = new ModeloProducto({ telefono: telefono, publicaciones: publicaciones });
+            producto.save();
+            res.send("True");
+        }
+    })
+});
+
 app.put("/update", async (req, res) => {
     const newTel = req.body.newTel;
     const id = req.body.id;
@@ -374,6 +422,20 @@ app.put("/editarProducto", async (req, res) => {
 
     res.send("Updated");
 });
+
+app.get("/readRedes/:telefono", async (req, res) => {
+    const id = req.params.telefono;
+    await ModeloUsuario.find({telefono:req.params.telefono}, {redesSociales:1, _id:0},function(err,user){
+        if(user){
+            res.send(user);
+        }
+        else{
+            res.send(err);
+        }
+        
+    }
+    
+)});
 
 app.get("/getFavProd/:telefono", async (req, res) => {
     const telefono = req.params.telefono;
