@@ -28,7 +28,7 @@ function Tabla(){
             <MostrarPez />
         </Route>
 
-        <Route path="/mostrarPub">
+        <Route path="/mostrarPub/:id">
             <MostrarPub />
         </Route>
 

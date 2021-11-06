@@ -1,10 +1,12 @@
 import React, {useEffect, useState, Fragment} from "react";
+import { useParams } from 'react-router-dom'
 import axios from "axios";
 import * as ReactBootstrap from "react-bootstrap";
 import ReadPub from "./ReadPub";
 import EditPub from "./EditPub";
-
 function MostrarPub(){
+  const id = useParams()
+  console.log(id.id)
     const [prod, setProd] = useState([])
     const [addFormData, setAddFormData] = useState({
         tipo:"",
@@ -118,7 +120,7 @@ function MostrarPub(){
         }
     }, [])
     const fetchPublicaciones = () => {
-        const api = "http://localhost:3001/read/614eb0b2ee93e629974bb7aa";
+        const api = "http://localhost:3001/read/"+id.id;
         fetch(api)
             .then((response) => response.json())
             .then((responseJson) => {
