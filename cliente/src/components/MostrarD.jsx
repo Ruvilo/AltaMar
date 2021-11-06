@@ -4,7 +4,6 @@ import * as ReactBootstrap from "react-bootstrap";
 import {Link} from "react-router-dom";
 
 function MostrarD(){
-    const [prod, setProd] = useState({ producto: []})
     const [guardaP, setGuardaP] = useState([{
         publicaciones: [{
             tipo:'',
@@ -26,16 +25,6 @@ function MostrarD(){
 
     }, [setGuardaP])
 
-    {/*useEffect(() => {
-        axios.get("http://localhost:3001/read"
-        ).then((response)=>{
-          setProd(response.data);
-          console.log(prod.publicaciones);
-        }).catch(()=> {
-          console.log("ERROR");
-        });
-    
-      }, []);*/}
 
 
 
@@ -52,23 +41,13 @@ function MostrarD(){
             <tbody>
                 {
                     guardaP.map((item) => (
-                        console.log(item.publicaciones),
+                        
                         <tr key={item._id}>
                             <td>{item._id}</td>
                             <td>{item.telefono}</td>
                             <td>
                                 <Link to = '/MostrarPub' state={{id:item._id}}><button onClick={() => {console.log(item._id)}}>Ver Productos</button></Link>
                             </td>
-                        {/*item.publicaciones.map((sub) => (
-                            <><td>{sub.tipo}</td><td>{sub.cantidad}</td><td>{sub.precio}</td><td>{sub.fecha}</td><td>{sub.localizacion}</td><td>{sub.estado}</td></>
-                        ))}
-                        
-                            
-                            
-                            {/*{item.publicaciones.map((datos) => (
-                                <td key={datos._id}>{datos.estado}</td> 
-                            ))}*/}
-                            
                         </tr>
                         
                     ))
@@ -77,19 +56,6 @@ function MostrarD(){
                 
             </tbody>
         </ReactBootstrap.Table>
-        {/*<h1>Datos</h1>*/}
-        {/*<ReactBootstrap.Table striped bordered hover>
-            <thead>
-                <tr>
-                    <th>Tel</th>
-                    <th>Tipo</th>
-                </tr>
-            </thead>
-            <tbody>
-                {prod.map(mostrarDatos)}
-
-            </tbody>
-        </ReactBootstrap.Table>*/}
         
     </div>
 }

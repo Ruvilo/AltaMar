@@ -1,0 +1,13 @@
+//Server
+sudo systemctl start mongod
+npm init
+node index.js
+
+//Client
+npm start
+
+
+
+npm i react-admin ra-data-simple-rest @material-ui/core
+
+617e453a788df9400b1e69d5

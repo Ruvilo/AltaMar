@@ -1,12 +1,10 @@
 import React, {Fragment, useEffect, useState} from "react";
 import axios from "axios";
 import * as ReactBootstrap from "react-bootstrap";
-import {Link} from "react-router-dom";
-import {List, Datagrid, TextField, EditButton, DeleteButton} from 'react-admin';
 import ReadPez from "./ReadPez";
 import EditPez from "./EditPez";
 
-function MostrarP(){
+function MostrarPez(){
     const [peces, setPeces] = useState([])
 
     const [addFormData, setAddFormData] = useState({
@@ -156,4 +154,4 @@ function MostrarP(){
     </div>
 }
 
-export default MostrarP;
+export default MostrarPez;

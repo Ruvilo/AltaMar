@@ -74,19 +74,3 @@ function InsertarP(){
 }
 
 export default InsertarP;
-
-{/*
-    <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1"></input>
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-    Comentario abajo de un input <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-    const telefono = req.body.telefono;
-    const tipo = req.body.tipo;
-    const cantidad = req.body.cantidad;
-    const precio = req.body.precio;
-    const fecha = req.body.fecha;
-    const localizacion = req.body.localizacion;
-    const estado = req.body.estado;
-    const publicaciones = {tipo : tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado};
-*/}
