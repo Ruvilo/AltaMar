@@ -247,6 +247,43 @@ app.put("/aumentarPez", async (req, res) => {
     });
 });
          
+{/*app.get("/readPromP", async (req, res) => {
+    ModeloProducto.find({}, {'publicaciones.precio':1, _id:0}, {sort: {'publicaciones.precio':-1},  limit: 1}, function(err, result) {
+        if (err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+            //console.log(result);
+        }
+    });
+});*/}
+
+app.get("/readPromP", async(req, res) => {
+    ModeloProducto.aggregate([
+        {$unwind:"$publicaciones"}, 
+        {$group:{"_id":"_id", promedio:{$avg:"$publicaciones.precio"}}}
+    ],function(err,user){
+        if(err){res.send(err);}
+        else{
+            res.send(user);
+            }
+        }
+    )
+})
+
+app.get("/readMaxP", async(req, res) => {
+    ModeloProducto.aggregate([
+        {$unwind:"$publicaciones"},{$sort:{"publicaciones.precio":-1}}, {$project: {_id: 0, 'publicaciones.precio': 1}}
+        
+    ],function(err,user){
+        if(err){res.send(err);}
+        else{
+            res.send(user[0]);
+            }
+        }
+    )
+})
 
 app.post("/insertaProducto", async (req, res) => {
     const telefono = req.body.telefono;
