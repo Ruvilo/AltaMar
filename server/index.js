@@ -373,6 +373,18 @@ app.get("/read/:id", async (req, res) => {
     
 )});
 
+app.get("/readRedes/:telefono", async (req, res) => {
+    const id = req.params.telefono;
+    await ModeloUsuario.findOne({telefono:req.params.telefono}, {redesSociales:1, _id:0},function(err,user){
+        if(user){
+            res.send(user);
+        }
+        else{
+            res.send(err);
+        }   
+    }
+)});
+
 app.post("/verificarNum", async (req, res) => {
     const telefono = req.body.telefono;
     ModeloUsuario.findOne({ telefono: telefono }, function (err, user) {
