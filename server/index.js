@@ -359,45 +359,60 @@ app.delete("/delete/:id", async (req, res) => {
 });
 */}
 
-app.get("/read/:id", async (req, res) => {
-    const id = req.params.id;
-    await ModeloProducto.findById(req.params.id, {publicaciones:1, _id:0},function(err,user){
-        if(user){
-            res.send(user);
-        }
-        else{
-            res.send(error);
+    app.get("/read/:id", async (req, res) => {
+        const id = req.params.id;
+        await ModeloProducto.findById(req.params.id, {publicaciones:1, _id:0},function(err,user){
+            if(user){
+                res.send(user);
+            }
+            else{
+                res.send(error);
+            }
+            
         }
         
-    }
-    
-)});
+    )});
 
-app.get("/readRedes/:telefono", async (req, res) => {
-    const id = req.params.telefono;
-    await ModeloUsuario.findOne({telefono:req.params.telefono}, {redesSociales:1, _id:0},function(err,user){
-        if(user){
-            res.send(user);
+    app.get("/readRedes/:telefono", async (req, res) => {
+        const id = req.params.telefono;
+        await ModeloUsuario.findOne({telefono:req.params.telefono}, {redesSociales:1, _id:0},function(err,user){
+            if(user){
+                res.send(user);
+            }
+            else{
+                res.send(err);
+            }   
         }
-        else{
-            res.send(err);
-        }   
-    }
-)});
+    )});
 
-app.post("/verificarNum", async (req, res) => {
-    const telefono = req.body.telefono;
-    ModeloUsuario.findOne({ telefono: telefono }, function (err, user) {
+    app.post("/verificarNum", async (req, res) => {
+        const telefono = req.body.telefono;
+        ModeloUsuario.findOne({ telefono: telefono }, function (err, user) {
 
-        if (err) { res.send(err); }
-        if (user) {
-            res.send("True");
-        }
+            if (err) { res.send(err); }
+            if (user) {
+                res.send("True");
+            }
 
-        else { res.send("False"); }
+            else { res.send("False"); }
+        })
+    });
+
+    app.get("/Filtro", async (req, res) => {
+        const mayor = req.body.mayor;
+        const menor = req.body.menor;
+        ModeloProducto.aggregate([
+            { $unwind: "$publicaciones" }, 
+            { $match: { $and: [{ "publicaciones.precio": {$gt:menor} }, 
+            { "publicaciones.precio":{$lt:mayor}}] } }, 
+            {$project: {_id: 0, publicaciones: 1}}
+        ], function(err, prods){
+            if(err){res.send("Error");}
+            else{
+                res.send(prods);
+            }
+        })
     })
-});
-
   app.post("/verificarProducto", async (req, res) => {
     const telefono = req.body.telefono;
     ModeloProducto.find({telefono:telefono},function(err,result){

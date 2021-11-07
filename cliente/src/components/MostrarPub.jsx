@@ -31,7 +31,7 @@ function MostrarPub(){
       const AgregarPub = (event) => {
         event.preventDefault();
         axios.post("http://localhost:3001/insertaProducto", {
-              telefono: "1",
+              telefono:id.telefono,
               tipo: addFormData.tipo,
               cantidad:addFormData.cantidad,
               precio:addFormData.precio,
@@ -106,7 +106,7 @@ function MostrarPub(){
         axios.delete(`http://localhost:3001/delete/${pubId}`).then((response) => {
                 console.log(response)
         });
-          //window.location.reload();
+          window.location.reload();
         
       };
 
