@@ -360,18 +360,21 @@ app.delete("/delete/:id", async (req, res) => {
 */}
 
     app.get("/read/:id", async (req, res) => {
+        const ObjectId = mongoose.Types.ObjectId;
         const id = req.params.id;
-        await ModeloProducto.findById(req.params.id, {publicaciones:1, _id:0},function(err,user){
-            if(user){
-                res.send(user);
-            }
-            else{
-                res.send(error);
-            }
+        ModeloProducto.aggregate([
+            {$match:{_id: ObjectId(req.params.id)}},
+            {$unwind: "$publicaciones" },
+            {$sort:{'publicaciones.tipo':1}},
+            {$project: {_id: 0, publicaciones: 1}},
             
-        }
-        
-    )});
+        ], function(err, prods){
+            if(err){res.send("Error");}
+            else{
+                res.send(prods);
+            }
+        });
+    });
 
     app.get("/readRedes/:telefono", async (req, res) => {
         const id = req.params.telefono;
