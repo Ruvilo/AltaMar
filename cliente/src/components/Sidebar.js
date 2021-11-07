@@ -14,10 +14,6 @@ const Sidebar = () =>{
                 <li>
                     <NavLink to="/MostrarU" className="  btn "exact activeClassName="active">Administrar Usuario</NavLink>
                 </li>
-                
-                <li>
-                    <NavLink to="/bzz" className="  btn"exact activeClassName="active">Cerrar Sesion</NavLink>
-                </li>
             </ul>
         </div>
 

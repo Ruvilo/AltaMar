@@ -13,12 +13,12 @@ const ReadUser = ({ user, handleEditClick, handleDeleteClick}) => {// handleEdit
           type="button"
           onClick={(event) => handleEditClick(event, user)}
         >
-          Edit
+          Editar
         </button>
         <button type="button" 
         onClick={() => handleDeleteClick(user._id)}
         >
-          Delete
+          Borrar
         </button>
       </td>
     </tr>

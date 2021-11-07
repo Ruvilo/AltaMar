@@ -211,7 +211,7 @@ function MostrarPub(){
                     onChange={handleAddFormChange}
                     />
                     
-                    <button type="submit">Add</button>
+                    <button type="submit">Agregar</button>
                 </form>
     </div>
 }

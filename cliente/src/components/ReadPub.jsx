@@ -14,12 +14,12 @@ const ReadPub = ({ pub, handleEditClick, handleDeleteClick}) => {// handleEditCl
           type="button"
           onClick={(event) => handleEditClick(event, pub)}
         >
-          Edit
+          Editar
         </button>
         <button type="button" 
         onClick={() => handleDeleteClick(pub._id)}
         >
-          Delete
+          Borrar
         </button>
       </td>
     </tr>
