@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Axios from "axios"
-import Server from "../serverData";
-import logo from "../img/logoAdmin.png"
-import styles from "../css/login.css"
+import logo from "./img/logoAdmin.png"
 
 
 function Login() {
@@ -12,7 +10,7 @@ function Login() {
     const manejoIngresar = (e) => {
         e.preventDefault();
         console.log(nombre, clave)
-        Axios.post(Server + "/loginAdmin", {
+        Axios.post("http://localhost:3001/loginAdmin", {
             usuario: nombre,
             clave: clave,
         }).then((response) => {

@@ -150,7 +150,7 @@ function MostrarPez(){
                     placeholder="Ruta de la imagen"
                     onChange={handleAddFormChange}
                     />
-                    <button type="submit">Add</button>
+                    <button type="submit">Agregar</button>
                 </form>
     </div>
 }

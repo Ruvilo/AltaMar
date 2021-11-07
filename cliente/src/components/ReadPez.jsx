@@ -10,12 +10,12 @@ const ReadPez = ({ peces, handleEditClick, handleDeleteClick}) => {// handleEdit
           type="button"
           onClick={(event) => handleEditClick(event, peces)}
         >
-          Edit
+          Editar
         </button>
         <button type="button" 
         onClick={() => handleDeleteClick(peces._id)}
         >
-          Delete
+          Borrar
         </button>
       </td>
     </tr>
