@@ -27,6 +27,7 @@ function MostrarPez(){
             }).then((response) => {
                 console.log(response)
             });
+        window.location.reload();
       };
     
       const handleEditFormChange = (event) => {
@@ -139,14 +140,14 @@ function MostrarPez(){
                     type="text"
                     name="nombre"
                     required="required"
-                    placeholder="Enter a name..."
+                    placeholder="Nombre del Pez"
                     onChange={handleAddFormChange}
                     />
                     <input
                     type="text"
                     name="foto"
                     required="required"
-                    placeholder="Enter an addres..."
+                    placeholder="Ruta de la imagen"
                     onChange={handleAddFormChange}
                     />
                     <button type="submit">Add</button>
