@@ -5,6 +5,7 @@ const cors = require("cors");
 const ModeloProducto = require("./models/producto.js");
 const ModeloUsuario = require("./models/usuario.js");
 const ModeloPez = require("./models/pez.js");
+const ModeloAdmin = require("./models/admin.js");
 const bcryptjs = require("bcryptjs");
 
 app.use(cors())
@@ -359,6 +360,42 @@ app.delete("/delete/:id", async (req, res) => {
 });
 */}
 
+app.post("/loginAdmin", async (req, res) => {
+    const usuario = req.body.usuario;
+    const clave = req.body.clave;
+
+    ModeloAdmin.findOne({ usuario: usuario }, function (err, user) {
+
+        if (err) {
+            res.send(err);
+        }
+        if (user) {
+            let compare = bcryptjs.compareSync(clave, user.clave);
+            if (compare) {
+                res.send("Ingreso");
+            }
+            else {
+                res.send("Ingreso el usuario o la contraseña incorrectamente");
+            }
+        }
+
+        else {
+            res.send("False");
+        }
+    })
+
+});
+
+app.post("/crearAdmin", async (req, res) => {
+
+    let clave = await bcryptjs.hash(req.body.clave, 8);
+    const usuario = req.body.usuario;
+
+    const admin = new ModeloAdmin({ clave: clave, usuario: usuario });
+    await admin.save();
+    res.send("Success");
+});
+
     app.get("/read/:id", async (req, res) => {
         const ObjectId = mongoose.Types.ObjectId;
         const id = req.params.id;
@@ -375,6 +412,20 @@ app.delete("/delete/:id", async (req, res) => {
             }
         });
     });
+
+    app.get("/readProd/:id", async (req, res) => {
+        const id = req.params.id;
+        await ModeloProducto.findById(req.params.id, {publicaciones:1, _id:0},function(err,user){
+            if(user){
+                res.send(user);
+            }
+            else{
+                res.send(error);
+            }
+            
+        }
+        
+    )});
 
     app.get("/readRedes/:telefono", async (req, res) => {
         const id = req.params.telefono;

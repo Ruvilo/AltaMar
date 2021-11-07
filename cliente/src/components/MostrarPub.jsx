@@ -120,7 +120,7 @@ function MostrarPub(){
         }
     }, [])
     const fetchPublicaciones = () => {
-        const api = "http://localhost:3001/read/"+id.id;
+        const api = "http://localhost:3001/readProd/"+id.id;
         fetch(api)
             .then((response) => response.json())
             .then((responseJson) => {
