@@ -1,15 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Tabla from './components/Tabla';
-import App from './App';
 import 'bootstrap/dist/css/bootstrap.css';
 import reportWebVitals from './reportWebVitals';
+import Home from './Home'
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <Tabla />
-    {/*<App />*/}
+    <Home />
   </React.StrictMode>,
   document.getElementById('root')
 );

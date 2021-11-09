@@ -1,0 +1,69 @@
+//Resultados mayores que un numero o fecha
+db.pezs.find({clicks: {$gt: 1}})
+
+//Ordenar resultados de forma descendente
+db.pezs.aggregate([{$sort: {"clicks": -1}}])
+
+//Ordenar resultados de forma descendente y solo muestra el nombre y la cantidad de clicks
+db.pezs.find({clicks: {$gt: 1}}, {nombre:1, clicks:1, _id:0})
+
+//Limita los resultados a X
+db.pezs.find({clicks: {$gt: -1}}, {nombre:1, clicks:1, _id:0}).limit(X)
+
+db.pezs.find().sort( { clicks: -1 } ).limit( 1 )
+
+//Ordenar resultados de forma descendente y solo muestra el nombre y la cantidad de clicks, y limita
+db.pezs.find({},{nombre:1, clicks:1, _id:0}).sort( { clicks: -1 } ).limit( 1 )
+
+//Tres peces con mas clicks
+db.pezs.find({},{nombre:1, _id:0}).sort({clicks: -1}).limit(3)
+
+
+{"nombre":"Pargo", "foto":"/home/danieloaiza/Downloads/pargo.jpg", "clicks":"504"}
+
+<TouchableOpacity 
+        style={selectedButton === 'button1' ? styles.optionCompradorChecked : styles.optionComprador} 
+        onPress={() => setSelectedButton('button1')}>
+          <Image
+          style={styles.logo}
+          source={selectedButton === 'button1' ? require('../assets/img/logoWhite.png') : selectedButton === 'button2' ? require('../assets/img/logoBlack.png') : require('../assets/img/logoOrange.png')}
+          />
+      </TouchableOpacity>
+      
+optionComprador: {
+      backgroundColor: colors.whiteButtons,
+      alignItems: 'center',
+      position: 'absolute',
+      top: 192,
+      bottom: 480,
+      width: 140,
+      height: 140,
+      borderRadius: 6,
+      elevation: 10,
+    },
+
+db.productos.aggregate([ {$lookup: { from:"usuarios", localField: "telefono", foreignField:"telefono", as: "resul" }}, {$lookup: { from:"peces", localField: "publicaciones.tipo", foreignField:"nombre", as: "resul" }}, {$match:{_id:ObjectId("614eb0b2ee93e629974bb7aa"), nombre:"publicaciones."}}])
+db.peces.aggregate([{$lookup: { from:"productos", localField: "nombre", foreignField:"publicaciones.tipo", as: "resul" }}, {$match:{"producto.publicaciones._id":ObjectId("614eb0b2ee93e629974bb7ab")}}])
+{"id": "614eb0b2ee93e629974bb7ab", "tipo":"Atun", "cantidad":"22", "precio":"2000", "fecha":"2021-10-19", "localizacion":"Puntarenas", "estado":"true"}
+class App extends Component {
+  state = { avatar: "" }
+
+  get avatarImage() {
+    switch (this.state.avatar) {
+      case "spiderman":
+        return require('./spiderman.png');
+      case "batman":
+        return require('./batman.png');
+      case "hulk":
+        return require('./hulk.png');
+      default:
+        return require('./no-image.png');
+    }
+  }
+
+  render() {
+    return <Image source={this.avatarImage} />
+  }
+}
+
+{"id": "618230055447d65a218c8766", "nombre":"Churro", "clave":"222", "telefono":"89987465", "cedula":"123444498", "ubicacion":"Locos", "rol":"vendedor"}

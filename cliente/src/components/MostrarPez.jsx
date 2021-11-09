@@ -1,12 +1,10 @@
 import React, {Fragment, useEffect, useState} from "react";
 import axios from "axios";
 import * as ReactBootstrap from "react-bootstrap";
-import {Link} from "react-router-dom";
-import {List, Datagrid, TextField, EditButton, DeleteButton} from 'react-admin';
 import ReadPez from "./ReadPez";
 import EditPez from "./EditPez";
 
-function MostrarP(){
+function MostrarPez(){
     const [peces, setPeces] = useState([])
 
     const [addFormData, setAddFormData] = useState({
@@ -29,6 +27,7 @@ function MostrarP(){
             }).then((response) => {
                 console.log(response)
             });
+        window.location.reload();
       };
     
       const handleEditFormChange = (event) => {
@@ -141,19 +140,19 @@ function MostrarP(){
                     type="text"
                     name="nombre"
                     required="required"
-                    placeholder="Enter a name..."
+                    placeholder="Nombre del Pez"
                     onChange={handleAddFormChange}
                     />
                     <input
                     type="text"
                     name="foto"
                     required="required"
-                    placeholder="Enter an addres..."
+                    placeholder="Ruta de la imagen"
                     onChange={handleAddFormChange}
                     />
-                    <button type="submit">Add</button>
+                    <button type="submit">Agregar</button>
                 </form>
     </div>
 }
 
-export default MostrarP;
+export default MostrarPez;

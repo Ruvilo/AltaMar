@@ -5,6 +5,7 @@ const cors = require("cors");
 const ModeloProducto = require("./models/producto.js");
 const ModeloUsuario = require("./models/usuario.js");
 const ModeloPez = require("./models/pez.js");
+const ModeloAdmin = require("./models/admin.js");
 const bcryptjs = require("bcryptjs");
 
 app.use(cors())
@@ -34,6 +35,53 @@ app.post("/crearUsuario", async (req, res) => {
     res.send("Success");
 });
 
+app.get("/readUser", async (req, res) => {
+    ModeloUsuario.find({}, (err, result) => {
+        if (err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+        }
+    });
+});
+
+app.put("/editarUsuario", async (req, res) => {
+    const telefono = req.body.telefono;
+    const nombre = req.body.nombre;
+    let clave = await bcryptjs.hash(req.body.clave, 8); 
+    const cedula = req.body.cedula;
+    const ubicacion = req.body.ubicacion;
+    const rol = req.body.rol;
+    await ModeloUsuario.updateMany({ telefono: telefono },
+        {
+            $set:
+            {
+                'nombre' : nombre,
+                'clave': clave,
+                'cedula': cedula,
+                'ubicacion': ubicacion,
+                'rol':rol
+            }
+        }, function (error, productoUpdate) {
+            if (error) { res.send("Failed") }
+            else { 
+                res.send("Updated");
+            }
+        }
+)});
+
+app.delete("/deleteUser/:id", async (req, res) => {
+    const id = req.params.id;
+    ModeloUsuario.findByIdAndDelete(req.params.id).then(data => {
+        if(!blog){
+            return res.status(404).send();
+        }
+        res.send(data);
+    }).catch(error => {
+        res.status(500).send(error);
+    })
+});
 
 app.post("/InsertaFav", async (req, res) => {
     const telefono = req.body.telefono;
@@ -194,6 +242,91 @@ app.put("/editarPez", async (req, res) => {
     res.send("Updated");
 });
 
+
+app.put("/aumentarPez", async (req, res) => {
+    const nombre = req.body.nombre;
+    ModeloPez.findOneAndUpdate({ nombre: nombre },{$inc: {clicks: 1}}, function (error, success) {
+        if (error) {
+            res.send("False");
+        } else {
+            res.send("True");
+        }
+    });
+});
+         
+{/*app.get("/readPromP", async (req, res) => {
+    ModeloProducto.find({}, {'publicaciones.precio':1, _id:0}, {sort: {'publicaciones.precio':-1},  limit: 1}, function(err, result) {
+        if (err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+            //console.log(result);
+        }
+    });
+});*/}
+
+app.get("/readPromP", async(req, res) => {
+    ModeloProducto.aggregate([
+        {$unwind:"$publicaciones"}, 
+        {$group:{"_id":"_id", promedio:{$avg:"$publicaciones.precio"}}}
+    ],function(err,user){
+        if(err){res.send(err);}
+        else{
+            res.send(user);
+            }
+        }
+    )
+})
+
+app.get("/readMaxP", async(req, res) => {
+    ModeloProducto.aggregate([
+        {$unwind:"$publicaciones"},{$sort:{"publicaciones.precio":-1}}, {$project: {_id: 0, 'publicaciones.precio': 1}}
+        
+    ],function(err,user){
+        if(err){res.send(err);}
+        else{
+            res.send(user[0]);
+            }
+        }
+    )
+})
+
+app.post("/insertaProducto", async (req, res) => {
+    const telefono = req.body.telefono;
+    const tipo = req.body.tipo;
+    const cantidad = req.body.cantidad;
+    const precio = req.body.precio;
+    const fecha = req.body.fecha;
+    const localizacion = req.body.localizacion;
+    const estado = req.body.estado;
+    const publicaciones = { tipo: tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado };
+    ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
+        if (err) { res.send(err); }
+        if (user) { // el usuario ya tiene almenos 1 publicacion
+            ModeloProducto.findOneAndUpdate(
+                { telefono: telefono },
+                {
+                    $push: {
+                        publicaciones: publicaciones
+                    }
+                },
+                function (error, success) {
+                    if (error) {
+                        res.send("False");
+                    } else {
+                        res.send("True");
+                    }
+                });
+        }
+        else {//no hay publicaciones
+            const producto = new ModeloProducto({ telefono: telefono, publicaciones: publicaciones });
+            producto.save();
+            res.send("True");
+        }
+    })
+});
+
 app.put("/update", async (req, res) => {
     const newTel = req.body.newTel;
     const id = req.body.id;
@@ -212,9 +345,12 @@ app.put("/update", async (req, res) => {
 });
 
 app.delete("/delete/:id", async (req, res) => {
-    const id = req.params.id;
-    await ModeloProducto.findByIdAndRemove(id).exec();
-    res.send("Deleted");
+    ModeloProducto.updateOne({'publicaciones._id':req.params.id}, 
+    {$pull:{'publicaciones':{'_id':req.params.id}}
+    }, function (error, prod) {
+        if (error) { res.send("Failed") }
+        else { res.send("Deleted") }
+    });
 });
 
 app.get("/read/:id", async (req, res) => {
@@ -231,21 +367,112 @@ app.get("/read/:id", async (req, res) => {
 
     )
 });
+{/*
+app.delete("/delete/:id", async (req, res) => {
+    try{
+        ModeloProducto.updateOne({'publicaciones._id':req.params.id}, 
+        {$pull:{'publicaciones':{'_id':req.params.id}}})
+    }catch(error){
+        res.send(error);
+    }
 
-app.post("/verificarNum", async (req, res) => {
-    const telefono = req.body.telefono;
-    ModeloUsuario.findOne({ telefono: telefono }, function (err, user) {
+    res.send("Deleted");
+});
+*/}
 
-        if (err) { res.send(err); }
+app.post("/loginAdmin", async (req, res) => {
+    const usuario = req.body.usuario;
+    const clave = req.body.clave;
+
+    ModeloAdmin.findOne({ usuario: usuario }, function (err, user) {
+
+        if (err) {
+            res.send(err);
+        }
         if (user) {
-            res.send("True");
+            let compare = bcryptjs.compareSync(clave, user.clave);
+            if (compare) {
+                res.send("Ingreso");
+            }
+            else {
+                res.send("Ingreso el usuario o la contraseña incorrectamente");
+            }
         }
 
-        else { res.send("False"); }
+        else {
+            res.send("False");
+        }
     })
+
 });
 
-app.post("/verificarProducto", async (req, res) => {
+app.post("/crearAdmin", async (req, res) => {
+
+    let clave = await bcryptjs.hash(req.body.clave, 8);
+    const usuario = req.body.usuario;
+
+    const admin = new ModeloAdmin({ clave: clave, usuario: usuario });
+    await admin.save();
+    res.send("Success");
+});
+
+    app.get("/read/:id", async (req, res) => {
+        const ObjectId = mongoose.Types.ObjectId;
+        const id = req.params.id;
+        ModeloProducto.aggregate([
+            {$match:{_id: ObjectId(req.params.id)}},
+            {$unwind: "$publicaciones" },
+            {$sort:{'publicaciones.tipo':1}},
+            {$project: {_id: 0, publicaciones: 1}},
+            
+        ], function(err, prods){
+            if(err){res.send("Error");}
+            else{
+                res.send(prods);
+            }
+        });
+    });
+
+    app.get("/readProd/:id", async (req, res) => {
+        const id = req.params.id;
+        await ModeloProducto.findById(req.params.id, {publicaciones:1, _id:0},function(err,user){
+            if(user){
+                res.send(user);
+            }
+            else{
+                res.send(error);
+            }
+            
+        }
+        
+    )});
+
+    app.get("/readRedes/:telefono", async (req, res) => {
+        const id = req.params.telefono;
+        await ModeloUsuario.findOne({telefono:req.params.telefono}, {redesSociales:1, _id:0},function(err,user){
+            if(user){
+                res.send(user);
+            }
+            else{
+                res.send(err);
+            }   
+        }
+    )});
+
+    app.post("/verificarNum", async (req, res) => {
+        const telefono = req.body.telefono;
+        ModeloUsuario.findOne({ telefono: telefono }, function (err, user) {
+
+            if (err) { res.send(err); }
+            if (user) {
+                res.send("True");
+            }
+
+            else { res.send("False"); }
+        })
+    });
+
+  app.post("/verificarProducto", async (req, res) => {
     const telefono = req.body.telefono;
     ModeloProducto.find({ telefono: telefono }, function (err, result) {
         if (err) {
@@ -264,8 +491,8 @@ app.post("/insertaProducto", async (req, res) => {
     const precio = req.body.precio;
     const fecha = req.body.fecha;
     const localizacion = req.body.localizacion;
-    const vendido = req.body.vendido;
-    const publicaciones = { tipo: tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, vendido: vendido };
+    const estado = req.body.estado;
+    const publicaciones = { tipo: tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado };
     ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
         if (err) { res.send(err); }
         if (user) { // el usuario ya tiene almenos 1 publicacion
@@ -299,7 +526,7 @@ app.put("/editarProducto", async (req, res) => {
     const precio = req.body.precio;
     const fecha = req.body.fecha;
     const localizacion = req.body.localizacion;
-    const vendido = req.body.vendido;
+    const estado = req.body.estado;
     await ModeloProducto.updateMany({ 'publicaciones._id': id },
         {
             $set:
@@ -309,7 +536,7 @@ app.put("/editarProducto", async (req, res) => {
                 'publicaciones.$.precio': precio,
                 'publicaciones.$.fecha': fecha,
                 'publicaciones.$.localizacion': localizacion,
-                'publicaciones.$.vendido': vendido
+                'publicaciones.$.estado': estado
             }
         }, function (error, productoUpdate) {
             if (error) { res.send("Failed") }
@@ -318,6 +545,20 @@ app.put("/editarProducto", async (req, res) => {
 
     res.send("Updated");
 });
+
+app.get("/readRedes/:telefono", async (req, res) => {
+    const id = req.params.telefono;
+    await ModeloUsuario.find({telefono:req.params.telefono}, {redesSociales:1, _id:0},function(err,user){
+        if(user){
+            res.send(user);
+        }
+        else{
+            res.send(err);
+        }
+        
+    }
+    
+)});
 
 app.get("/getFavProd/:telefono", async (req, res) => {
     const telefono = req.params.telefono;
