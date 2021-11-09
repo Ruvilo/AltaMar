@@ -26,7 +26,7 @@ app.post("/crearUsuario", async (req, res) => {
     const telegram = req.body.telegram;
     const simpe = req.body.simpe;
     const redesSociales = { whatsapp: whatsapp, telegram: telegram, simpe: simpe };
-    if(telefono === '' || nombre === '' || clave === '' || cedula === '' || ubicacion === ''){
+    if (telefono === '' || nombre === '' || clave === '' || cedula === '' || ubicacion === '') {
         res.send("Falta");
     }
     const usuario = new ModeloUsuario({ telefono: telefono, clave: clave, nombre: nombre, cedula: cedula, ubicacion: ubicacion, rol: rol, redesSociales: redesSociales });
@@ -35,57 +35,63 @@ app.post("/crearUsuario", async (req, res) => {
 });
 
 
- app.post("/InsertaFav", async (req, res) => {
+app.post("/InsertaFav", async (req, res) => {
     const telefono = req.body.telefono;
     const favorito = req.body.favorito; // object id de usuario
-    ModeloUsuario.findOne({telefono:telefono},function(err,user){
-        
-        if(err){res.send(err);}
-        if(user){
+    ModeloUsuario.findOne({ telefono: telefono }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
             //console.log(telefono);    
             ModeloUsuario.findOneAndUpdate(
-                { telefono : telefono}, 
-                { $push: {
-                    favoritos: favorito}},
-                    function (error, success) {
-                     if (error) {
+                { telefono: telefono },
+                {
+                    $push: {
+                        favoritos: favorito
+                    }
+                },
+                function (error, success) {
+                    if (error) {
                         res.send("False");
-                     } else {
+                    } else {
                         res.send("True");
-                     }
-                 }); 
+                    }
+                });
 
         }
-        else{res.send("ERROR");}
+        else { res.send("ERROR"); }
     })
-  });
+});
 
 
 app.post("/InsertaFavProd", async (req, res) => {
     const telefono = req.body.telefono;
     const favorito = req.body.favorito; //obj id de publicacion 
-    ModeloProducto.findOne({telefono:telefono},function(err,user){
-        
-        if(err){res.send(err);}
-        if(user){
+    ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
             //console.log(telefono);    
             ModeloProducto.findOneAndUpdate(
-                { telefono : telefono}, 
-                { $push: {
-                    favoritos: favorito}},
-                    function (error, success) {
-                       // console.log(success);
-                     if (error) {
+                { telefono: telefono },
+                {
+                    $push: {
+                        favoritos: favorito
+                    }
+                },
+                function (error, success) {
+                    // console.log(success);
+                    if (error) {
                         res.send("False");
-                     } else {
+                    } else {
                         res.send("True");
-                     }
-                 }); 
+                    }
+                });
 
         }
-        else{res.send("ERROR");}
+        else { res.send("ERROR"); }
     })
-  });
+});
 
 
 app.post("/insert", async (req, res) => {
@@ -129,28 +135,28 @@ app.get("/read", async (req, res) => {
 app.post("/insertaPez", async (req, res) => {
     const nombre = req.body.nombre;
     const foto = req.body.foto;
-    const producto = new ModeloPez({nombre:nombre, foto:foto});
+    const producto = new ModeloPez({ nombre: nombre, foto: foto });
     await producto.save()
     res.send("Success");
 });
 
 app.get("/readPeces", async (req, res) => {
     ModeloPez.find({}, (err, result) => {
-        if (err){
+        if (err) {
             res.send(err);
         }
-        else{
+        else {
             res.send(result);
         }
     });
 });
 
 app.get("/readTop", async (req, res) => {
-    ModeloPez.find({}, {nombre:1, _id:0}, {sort: {'clicks':-1},  limit: 3}, function(err, result) {
-        if (err){
+    ModeloPez.find({}, { nombre: 1, _id: 0 }, { sort: { 'clicks': -1 }, limit: 3 }, function (err, result) {
+        if (err) {
             res.send(err);
         }
-        else{
+        else {
             res.send(result);
             //console.log(result);
         }
@@ -160,7 +166,7 @@ app.get("/readTop", async (req, res) => {
 app.delete("/deletePez/:id", async (req, res) => {
     const id = req.params.id;
     ModeloPez.findByIdAndDelete(req.params.id).then(data => {
-        if(!blog){
+        if (!blog) {
             return res.status(404).send();
         }
         res.send(data);
@@ -177,7 +183,7 @@ app.put("/editarPez", async (req, res) => {
         {
             $set:
             {
-                nombre : nombre,
+                nombre: nombre,
                 foto: foto,
             }
         }, function (error, productoUpdate) {
@@ -213,17 +219,18 @@ app.delete("/delete/:id", async (req, res) => {
 
 app.get("/read/:id", async (req, res) => {
     const id = req.params.id;
-    await ModeloProducto.findById(req.params.id, {publicaciones:1, _id:0},function(err,user){
-        if(user){
+    await ModeloProducto.findById(req.params.id, { publicaciones: 1, _id: 0 }, function (err, user) {
+        if (user) {
             res.send(user);
         }
-        else{
+        else {
             res.send(error);
         }
-        
+
     }
-    
-)});
+
+    )
+});
 
 app.post("/verificarNum", async (req, res) => {
     const telefono = req.body.telefono;
@@ -238,19 +245,19 @@ app.post("/verificarNum", async (req, res) => {
     })
 });
 
-  app.post("/verificarProducto", async (req, res) => {
+app.post("/verificarProducto", async (req, res) => {
     const telefono = req.body.telefono;
-    ModeloProducto.find({telefono:telefono},function(err,result){
-        if (err){
+    ModeloProducto.find({ telefono: telefono }, function (err, result) {
+        if (err) {
             res.send(err);
         }
-        else{
+        else {
             res.send(result);
         }
     })
-  });
+});
 
-  app.post("/insertaProducto", async (req, res) => {
+app.post("/insertaProducto", async (req, res) => {
     const telefono = req.body.telefono;
     const tipo = req.body.tipo;
     const cantidad = req.body.cantidad;
@@ -314,62 +321,62 @@ app.put("/editarProducto", async (req, res) => {
 
 app.get("/getFavProd/:telefono", async (req, res) => {
     const telefono = req.params.telefono;
-    var dict  ={};
-    ModeloProducto.findOne({telefono:telefono},{favoritos: 1, _id: 0},function(err,user){
-        
-        if(err){res.send(err);}
-        if(user){
+    var dict = {};
+    ModeloProducto.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
 
             ModeloProducto.aggregate([
-                {$unwind:"$publicaciones"},{$match:{"publicaciones._id":{ $in:user.favoritos}}}
-                 
-            ],function(err,user){
-                if(err){res.send(err);}
-                    if(user){
-                        user.map(function(i) {
-                            
-                            //console.log(i);
-                            
-                            
-                        });
-                        res.send("True")
+                { $unwind: "$publicaciones" }, { $match: { "publicaciones._id": { $in: user.favoritos } } }
 
-                    }
+            ], function (err, user) {
+                if (err) { res.send(err); }
+                if (user) {
+                    user.map(function (i) {
+
+                        //console.log(i);
+
+
+                    });
+                    res.send("True")
+
                 }
-            
+            }
+
             )
 
 
         }
-        
-        else{res.send("False");}
+
+        else { res.send("False"); }
     })
-  });
+});
 
 app.get("/getFav/:telefono", async (req, res) => {
     const telefono = req.params.telefono;
-    ModeloUsuario.findOne({telefono:telefono},{favoritos: 1, _id: 0},function(err,user){
-        
-        if(err){res.send(err);}
-        if(user){
+    ModeloUsuario.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
 
-            ModeloUsuario.find({ "_id":{ $in:user.favoritos}},{nombre: 1,telefono:1, _id: 0},function(err,user){
-        
-                if(err){res.send(err);}
-                if(user){
+        if (err) { res.send(err); }
+        if (user) {
+
+            ModeloUsuario.find({ "_id": { $in: user.favoritos } }, { nombre: 1, telefono: 1, _id: 0 }, function (err, user) {
+
+                if (err) { res.send(err); }
+                if (user) {
                     //console.log(user);
                     res.send(user);
                 }
-                
-                else{res.send("False");}
-            }).sort({nombre:1})
+
+                else { res.send("False"); }
+            }).sort({ nombre: 1 })
 
 
         }
-        
-        else{res.send("False");}
+
+        else { res.send("False"); }
     })
-  });
+});
 
 
 app.post("/login", async (req, res) => {
@@ -388,8 +395,8 @@ app.post("/login", async (req, res) => {
         else { res.send("False"); }
     })
 
-  });
-  app.post("/insertaProducto", async (req, res) => {
+});
+app.post("/insertaProducto", async (req, res) => {
     const telefono = req.body.telefono;
     const tipo = req.body.tipo;
     const cantidad = req.body.cantidad;
@@ -397,30 +404,123 @@ app.post("/login", async (req, res) => {
     const fecha = req.body.fecha;
     const localizacion = req.body.localizacion;
     const estado = req.body.estado;
-    const publicaciones = {tipo : tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado};
-    ModeloProducto.findOne({telefono:telefono},function(err,user){
-        if(err){res.send(err);}
-        if(user){ // el usuario ya tiene almenos 1 publicacion 
+    const publicaciones = { tipo: tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado };
+    ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
+        if (err) { res.send(err); }
+        if (user) { // el usuario ya tiene almenos 1 publicacion 
             ModeloProducto.findOneAndUpdate(
-                { telefono : telefono}, 
-                { $push: {
-                    publicaciones: publicaciones}},
-               function (error, success) {
-                     if (error) {
+                { telefono: telefono },
+                {
+                    $push: {
+                        publicaciones: publicaciones
+                    }
+                },
+                function (error, success) {
+                    if (error) {
                         res.send("False");
-                     } else {
+                    } else {
                         res.send("True");
-                     }
-                 }); 
+                    }
+                });
         }
-        else{//no hay publicaciones
-            const producto = new ModeloProducto({telefono: telefono, publicaciones: publicaciones});
-             producto.save();
+        else {//no hay publicaciones
+            const producto = new ModeloProducto({ telefono: telefono, publicaciones: publicaciones });
+            producto.save();
             res.send("True");
         }
     })
-  });
+});
 
-app.listen (3001, () => {
+app.get("/BuscaProducto/:tipo", async (req, res) => {
+    const tipo = req.params.tipo;
+    ModeloProducto.aggregate([
+        { $unwind: "$publicaciones" }, { $match: { "$and": [{ "publicaciones.tipo": {$regex: tipo, $options: 'i'} }, { "publicaciones.estado": "activo" }] } }, {$project: {_id: 0, publicaciones: 1}}
+    ],
+    function (error, result) {
+        if (error) { res.send("error") }
+        if (result.length) { res.send(result) }
+        else { res.send("empty") }
+    }
+)
+});
+
+app.get("/readMaxP", async(req, res) => {
+    ModeloProducto.aggregate([
+        {$unwind:"$publicaciones"},{$sort:{"publicaciones._id":-1}}, {$project: {_id: 0, 'publicaciones.precio': 1}}
+        
+    ],function(err,user){
+        if(err){res.send(err);}
+        else{
+            res.send(user[0]);
+            }
+        }
+    )
+});
+
+app.get("/readPromP", async(req, res) => {
+    ModeloProducto.aggregate([
+        {$unwind:"$publicaciones"}, 
+        {$group:{"_id":"_id", promedio:{$avg:"$publicaciones.precio"}}}
+    ],function(err,user){
+        if(err){res.send(err);}
+        else{
+            res.send(user);
+            }
+        }
+    )
+});
+
+app.get("/filtroRangoPrecio/:mayor/:menor/:tipo", async (req, res) => {
+    const mayor = parseInt(req.params.mayor);
+    const menor = parseInt(req.params.menor);
+    const tipo = req.params.tipo;
+    ModeloProducto.aggregate([
+        { $unwind: "$publicaciones" }, 
+        { $match: { $and: [{ "publicaciones.precio": {$gt:menor} }, 
+        { "publicaciones.precio":{$lt:mayor}}, {"publicaciones.tipo": {$regex: tipo, $options: 'i'}}] } }, 
+        {$project: {_id: 0, publicaciones: 1}}
+    ], function(err, prods){
+        if(err){res.send("Error");}
+        else{
+            res.send(prods);
+        }
+    })
+});
+
+app.get("/filtroUbicacion/:tipo/:ubicacion", async (req, res) => {
+    const tipo = req.params.tipo;
+    const ubicacion = req.params.ubicacion;
+    ModeloProducto.aggregate([
+        { $unwind: "$publicaciones" }, { $match: { "$and": [{ "publicaciones.tipo": {$regex: tipo, $options: 'i'} }, { "publicaciones.estado": "activo" }, {"publicaciones.localizacion": {$regex: ubicacion, $options: 'i'}}] } }, {$project: {_id: 0, publicaciones: 1}}
+    ],
+    function (error, result) {
+        if (error) { res.send("error") }
+        if (result.length) { res.send(result) }
+        else { res.send("empty") }
+    }
+)
+});
+
+app.get("/filtroDoble/:mayor/:menor/:ubicacion/:tipo", async (req, res) => {
+    const mayor = parseInt(req.params.mayor);
+    const menor = parseInt(req.params.menor);
+    const ubicacion = req.params.ubicacion;
+    const tipo = req.params.tipo;
+    ModeloProducto.aggregate([
+        { $unwind: "$publicaciones" }, 
+        { $match: { $and: [{ "publicaciones.precio": {$gt:menor} }, 
+        { "publicaciones.precio":{$lt:mayor}}, {"publicaciones.tipo": {$regex: tipo, $options: 'i'}}, 
+        { "publicaciones.estado": "activo" }, 
+        {"publicaciones.localizacion": {$regex: ubicacion, $options: 'i'}}] } }, 
+        {$project: {_id: 0, publicaciones: 1}}
+    ], function(err, prods){
+        if(err){res.send("Error");}
+        else{
+            res.send(prods);
+        }
+    })
+});
+
+app.listen(3001, () => {
     console.log("Conectado");
 });
