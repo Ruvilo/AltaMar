@@ -35,6 +35,45 @@ app.post("/crearUsuario", async (req, res) => {
     res.send("Success");
 });
 
+const existe = (path) => {
+    path = ".//" + path;
+    console.log("--------" + path);
+    const fs = require('fs');
+    fs.access(path, fs.F_OK, (err) => {
+        if (err) {
+            console.error(err);
+            return 0;
+        }
+        return 1;
+    });
+
+}
+
+app.get('/getImg/:nombre', async (req, res) => {
+
+    const nombre = req.params.nombre;
+
+    ModeloPez.findOne({ nombre: nombre }, (err, result) => {
+        if (err) {
+            res.sendFile("img/default.png", { root: __dirname });
+        }
+        else if (result) {
+            console.log("#######" + result.foto)
+            if (existe(result.foto)) {
+                res.sendFile(result.foto, { root: __dirname });
+            }
+            else {
+                res.sendFile("img/default.png", { root: __dirname });
+            }
+        }
+        else {
+            res.sendFile("img/default.png", { root: __dirname });
+
+        }
+    });
+});
+
+
 app.get("/readUser", async (req, res) => {
     ModeloUsuario.find({}, (err, result) => {
         if (err){
@@ -142,7 +181,7 @@ app.post("/InsertaFavProd", async (req, res) => {
 });
 
 
-app.post("/insert", async (req, res) => {
+{/*app.post("/insert", async (req, res) => {
     const tel = req.body.tel;
     const tipo = req.body.tipo;
     const cantidad = req.body.cantidad;
@@ -156,7 +195,7 @@ app.post("/insert", async (req, res) => {
     const producto = new ModeloProducto({ telefono: tel, publicaciones: publicaciones });
     await producto.save();
     res.send("Inserted data");
-});
+});*/}
 
 app.get("/read", async (req, res) => {
     ModeloProducto.find({}, (err, result) => {
@@ -351,6 +390,50 @@ app.delete("/delete/:id", async (req, res) => {
         if (error) { res.send("Failed") }
         else { res.send("Deleted") }
     });
+});
+
+app.put("/updateEstado", async (req, res) => {
+    const id = req.body.id;
+    const estado = req.body.estado;
+    await ModeloProducto.updateMany({ 'publicaciones._id': id },
+        {
+            $set:
+            {
+                'publicaciones.$.estado': estado
+            }
+        }, function (error, productoUpdate) {
+            if (error) { res.send("False") }
+            else { res.send("Updated") }
+        });
+
+    res.send("Updated");
+});
+
+
+app.post("/getMyProducts", async (req, res) => {
+    const telefono = req.body.telefono;
+    ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
+            res.send(user);
+        }
+
+        else { res.send("False"); }
+    })
+});
+
+app.post("/getFotoPez", async (req, res) => { 
+    const nombre = req.body.nombre;
+    ModeloPez.findOne({ nombre: nombre },  function (err, user) {
+        if (err) { res.send(err); }
+        
+        if (user) {
+            res.send(user.foto);
+        }
+
+        else { res.send("False"); }
+    })
 });
 
 app.get("/read/:id", async (req, res) => {
@@ -560,6 +643,29 @@ app.get("/readRedes/:telefono", async (req, res) => {
     
 )});
 
+
+{/*
+Revisar
+app.post("/getFavProd/", async (req, res) => {
+    const telefono = req.body.telefono;
+    const id = req.body.id;
+    var dict = {};
+    ModeloProducto.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
+            let c=  user["favoritos"];
+            let x= c.indexOf(id)!=-1;
+            res.send(x);
+
+        }
+
+        else { res.send("False"); }
+    })
+});
+*/}
+
+
 app.get("/getFavProd/:telefono", async (req, res) => {
     const telefono = req.params.telefono;
     var dict = {};
@@ -594,7 +700,44 @@ app.get("/getFavProd/:telefono", async (req, res) => {
     })
 });
 
-app.get("/getFav/:telefono", async (req, res) => {
+app.delete("/deleteFav", async (req, res) => {/*{
+    ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
+            let compare = bcryptjs.compareSync(clave, user["clave"]);
+            if (compare) { res.send("True"); }
+            else { res.send("False"); }
+        }
+
+        else { res.send("False"); }
+    })*/
+    const telefono = req.body.telefono;
+    const favorito = req.body.favorito;
+    
+    ModeloProducto.updateOne({telefono:req.body.telefono}, 
+    {$pull:{'favoritos':favorito}
+    }, function (error, prod) {
+        if (error) { res.send("Failed") }
+        else { res.send("Deleted") }
+    });
+});
+
+app.get("/getRecomendados/:len", async (req, res) => {
+    const len = parseInt(req.params.len, 10);
+    ModeloProducto.aggregate([{ $unwind: "$publicaciones" }, {$match:{"publicaciones.estado":"activo"}}  ,{$sample: {size: len}},{ "$project": { "__v": 0,"_id": 0, "telefono": 0, "favoritos": 0}} ],
+        function (error, result) {
+            //console.log(result);
+            if (error) { res.send("error") }
+            if (result.length) { res.send(result) }
+            else { res.send("empty") }
+
+
+        })
+});
+
+
+app.get("/getFavP/:telefono", async (req, res) => {
     const telefono = req.params.telefono;
     ModeloUsuario.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
 
