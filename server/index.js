@@ -435,7 +435,7 @@ app.post("/getFotoPez", async (req, res) => {
         else { res.send("False"); }
     })
 });
-
+{/*
 app.get("/read/:id", async (req, res) => {
     const id = req.params.id;
     await ModeloProducto.findById(req.params.id, { publicaciones: 1, _id: 0 }, function (err, user) {
@@ -450,7 +450,7 @@ app.get("/read/:id", async (req, res) => {
 
     )
 });
-{/*
+{
 app.delete("/delete/:id", async (req, res) => {
     try{
         ModeloProducto.updateOne({'publicaciones._id':req.params.id}, 
@@ -499,11 +499,28 @@ app.post("/crearAdmin", async (req, res) => {
     res.send("Success");
 });
 
-    app.get("/read/:id", async (req, res) => {
+    app.get("/pubId/:id", async (req, res) => {
         const ObjectId = mongoose.Types.ObjectId;
         const id = req.params.id;
         ModeloProducto.aggregate([
             {$match:{_id: ObjectId(req.params.id)}},
+            {$unwind: "$publicaciones" },
+            {$sort:{'publicaciones.tipo':1}},
+            {$project: {_id: 0, publicaciones: 1}},
+            
+        ], function(err, prods){
+            if(err){res.send("Error");}
+            else{
+                res.send(prods);
+            }
+        });
+    });
+
+    app.get("/pubNum/:telefono", async (req, res) => {
+        const ObjectId = mongoose.Types.ObjectId;
+        const telefono = req.params.telefono;
+        ModeloProducto.aggregate([
+            {$match:{telefono: telefono}},
             {$unwind: "$publicaciones" },
             {$sort:{'publicaciones.tipo':1}},
             {$project: {_id: 0, publicaciones: 1}},
@@ -904,6 +921,32 @@ app.get("/filtroDoble/:mayor/:menor/:ubicacion/:tipo", async (req, res) => {
         }
     })
 });
+app.get("/getVendedorP/:id", async (req, res) => {
+    ModeloProducto.findOne({ "publicaciones._id": req.params.id }, { nombre: 1, telefono: 1, "publicaciones._id": 1 }, function (err, user) {
+        const cel=user.telefono;
+        console.log(user.telefono)
+        ModeloUsuario.findOne({ telefono: cel }, function (err, user) {
+            if (err) { res.send(err); }
+            if (user) {
+                
+                //console.log(user);
+                res.send(user.nombre);
+            }
+
+            else { res.send("False"); }
+
+
+
+                    });
+ })});
+ app.get("/getVendedorNum/:id", async (req, res) => {
+    ModeloProducto.findOne({ "publicaciones._id": req.params.id }, { nombre: 1, telefono: 1, "publicaciones._id": 1 }, function (err, user) {
+            if (err) { res.send(err); }
+            if (user) {
+                res.send(user.telefono);
+            }
+            else { res.send("False"); }});
+ });
 
 app.listen(3001, () => {
     console.log("Conectado");
