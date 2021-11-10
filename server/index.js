@@ -151,6 +151,8 @@ app.post("/InsertaFav", async (req, res) => {
 });
 
 
+
+
 app.post("/InsertaFavProd", async (req, res) => {
     const telefono = req.body.telefono;
     const favorito = req.body.favorito; //obj id de publicacion 
@@ -435,7 +437,25 @@ app.post("/getFotoPez", async (req, res) => {
         else { res.send("False"); }
     })
 });
-{/*
+
+
+
+
+app.get("/getFotoPez2/:nombre", async (req, res) => { 
+    const nombre = req.params.nombre;
+    ModeloPez.findOne({ nombre: nombre },  function (err, user) {
+        if (err) { res.send(err); }
+        
+        if (user) {
+            res.send(user.foto);
+        }
+
+        else { res.send("False"); }
+    })
+});
+
+
+/*
 app.get("/read/:id", async (req, res) => {
     const id = req.params.id;
     await ModeloProducto.findById(req.params.id, { publicaciones: 1, _id: 0 }, function (err, user) {
@@ -461,7 +481,7 @@ app.delete("/delete/:id", async (req, res) => {
 
     res.send("Deleted");
 });
-*/}
+*/
 
 app.post("/loginAdmin", async (req, res) => {
     const usuario = req.body.usuario;
@@ -661,8 +681,58 @@ app.get("/readRedes/:telefono", async (req, res) => {
 )});
 
 
-{/*
-Revisar
+
+
+
+app.get("/getFav/:telefono", async (req, res) => {
+    const telefono = req.params.telefono;
+    ModeloUsuario.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
+
+            ModeloUsuario.find({ "_id": { $in: user.favoritos } }, { nombre: 1, telefono: 1, _id: 0 }, function (err, user) {
+
+                if (err) { res.send(err); }
+                if (user) {
+                    //console.log(user);
+                    res.send(user);
+                }
+
+                else { res.send("False"); }
+            }).sort({ nombre: 1 })
+
+
+        }
+
+        else { res.send("False"); }
+    })
+});
+
+
+
+app.get("/getPublicacion/:id", async (req, res) => {
+
+    try {
+        const ObjectId = mongoose.Types.ObjectId;
+        ModeloProducto.aggregate([
+            { $unwind: "$publicaciones" }, { $match: { "publicaciones._id": ObjectId(req.params.id) } }
+        ],
+            function (error, result) {
+                try {
+                    if (error) { res.send("error") }
+                    if (result != []) { res.send(result[0].publicaciones) }
+                    else { res.send("empty") }
+                } catch (err) {
+                    res.send("False");
+                }
+            })
+    } catch (err) {
+        res.send("False");
+    }
+
+});
+
 app.post("/getFavProd/", async (req, res) => {
     const telefono = req.body.telefono;
     const id = req.body.id;
@@ -671,45 +741,9 @@ app.post("/getFavProd/", async (req, res) => {
 
         if (err) { res.send(err); }
         if (user) {
-            let c=  user["favoritos"];
-            let x= c.indexOf(id)!=-1;
+            let c = user["favoritos"];
+            let x = c.indexOf(id) != -1;
             res.send(x);
-
-        }
-
-        else { res.send("False"); }
-    })
-});
-*/}
-
-
-app.get("/getFavProd/:telefono", async (req, res) => {
-    const telefono = req.params.telefono;
-    var dict = {};
-    ModeloProducto.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
-
-        if (err) { res.send(err); }
-        if (user) {
-
-            ModeloProducto.aggregate([
-                { $unwind: "$publicaciones" }, { $match: { "publicaciones._id": { $in: user.favoritos } } }
-
-            ], function (err, user) {
-                if (err) { res.send(err); }
-                if (user) {
-                    user.map(function (i) {
-
-                        //console.log(i);
-
-
-                    });
-                    res.send("True")
-
-                }
-            }
-
-            )
-
 
         }
 
@@ -753,24 +787,21 @@ app.get("/getRecomendados/:len", async (req, res) => {
         })
 });
 
-
 app.get("/getFavP/:telefono", async (req, res) => {
     const telefono = req.params.telefono;
-    ModeloUsuario.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
+    ModeloProducto.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
 
         if (err) { res.send(err); }
         if (user) {
 
-            ModeloUsuario.find({ "_id": { $in: user.favoritos } }, { nombre: 1, telefono: 1, _id: 0 }, function (err, user) {
+            if (err) { res.send(err); }
+            if (user) {
 
-                if (err) { res.send(err); }
-                if (user) {
-                    //console.log(user);
-                    res.send(user);
-                }
+                //console.log(user);
+                res.send(user);
+            }
 
-                else { res.send("False"); }
-            }).sort({ nombre: 1 })
+            else { res.send("False"); }
 
 
         }
@@ -924,7 +955,7 @@ app.get("/filtroDoble/:mayor/:menor/:ubicacion/:tipo", async (req, res) => {
 app.get("/getVendedorP/:id", async (req, res) => {
     ModeloProducto.findOne({ "publicaciones._id": req.params.id }, { nombre: 1, telefono: 1, "publicaciones._id": 1 }, function (err, user) {
         const cel=user.telefono;
-        console.log(user.telefono)
+        //console.log(user.telefono)
         ModeloUsuario.findOne({ telefono: cel }, function (err, user) {
             if (err) { res.send(err); }
             if (user) {
@@ -934,17 +965,15 @@ app.get("/getVendedorP/:id", async (req, res) => {
             }
 
             else { res.send("False"); }
-
-
-
                     });
  })});
+
 
  app.get("/getVendedor/:id", async (req, res) => {
     ModeloProducto.findOne({ "publicaciones._id": req.params.id }, 
     { nombre: 1, telefono: 1, "publicaciones._id": 1 }, function (err, user) {
         const cel=user.telefono;
-        console.log(user.telefono)
+        //console.log(user.telefono)
         ModeloUsuario.findOne({ telefono: cel }, {_id:0,nombre:1,ubicacion:1, telefono:1},function (err, user) {
             if (err) { res.send(err); }
             if (user) {
