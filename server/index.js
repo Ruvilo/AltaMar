@@ -939,6 +939,27 @@ app.get("/getVendedorP/:id", async (req, res) => {
 
                     });
  })});
+
+ app.get("/getVendedor/:id", async (req, res) => {
+    ModeloProducto.findOne({ "publicaciones._id": req.params.id }, 
+    { nombre: 1, telefono: 1, "publicaciones._id": 1 }, function (err, user) {
+        const cel=user.telefono;
+        console.log(user.telefono)
+        ModeloUsuario.findOne({ telefono: cel }, {_id:0,nombre:1,ubicacion:1, telefono:1},function (err, user) {
+            if (err) { res.send(err); }
+            if (user) {
+                
+                //console.log(user);
+                res.send(user);
+            }
+
+            else { res.send("False"); }
+
+
+
+                    });
+ })});
+
  app.get("/getVendedorNum/:id", async (req, res) => {
     ModeloProducto.findOne({ "publicaciones._id": req.params.id }, { nombre: 1, telefono: 1, "publicaciones._id": 1 }, function (err, user) {
             if (err) { res.send(err); }
