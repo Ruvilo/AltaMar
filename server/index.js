@@ -368,6 +368,13 @@ app.post("/insertaProducto", async (req, res) => {
     })
 });
 
+app.post("/insertaProductoInicial", async (req, res) => {
+    const telefono = req.body.telefono;
+    const producto = new ModeloProducto({ telefono:telefono });
+    await producto.save()
+    res.send("Success");
+});
+
 app.put("/update", async (req, res) => {
     const newTel = req.body.newTel;
     const id = req.body.id;
@@ -604,41 +611,6 @@ app.post("/crearAdmin", async (req, res) => {
     })
 });
 
-app.post("/insertaProducto", async (req, res) => {
-    const telefono = req.body.telefono;
-    const tipo = req.body.tipo;
-    const cantidad = req.body.cantidad;
-    const precio = req.body.precio;
-    const fecha = req.body.fecha;
-    const localizacion = req.body.localizacion;
-    const estado = req.body.estado;
-    const publicaciones = { tipo: tipo, cantidad: cantidad, precio: precio, fecha: fecha, localizacion: localizacion, estado: estado };
-    ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
-        if (err) { res.send(err); }
-        if (user) { // el usuario ya tiene almenos 1 publicacion
-            ModeloProducto.findOneAndUpdate(
-                { telefono: telefono },
-                {
-                    $push: {
-                        publicaciones: publicaciones
-                    }
-                },
-                function (error, success) {
-                    if (error) {
-                        res.send("False");
-                    } else {
-                        res.send("True");
-                    }
-                });
-        }
-        else {//no hay publicaciones
-            const producto = new ModeloProducto({ telefono: telefono, publicaciones: publicaciones });
-            producto.save();
-            res.send("True");
-        }
-    })
-});
-
 app.put("/editarProducto", async (req, res) => {
     const id = req.body.id;
     const tipo = req.body.tipo;
@@ -691,7 +663,7 @@ app.get("/getFav/:telefono", async (req, res) => {
         if (err) { res.send(err); }
         if (user) {
 
-            ModeloUsuario.find({ "_id": { $in: user.favoritos } }, { nombre: 1, telefono: 1, _id: 0 }, function (err, user) {
+            ModeloUsuario.find({ "_id": { $in: user.favoritos } }, { nombre: 1, telefono: 1, _id: 1 }, function (err, user) {
 
                 if (err) { res.send(err); }
                 if (user) {
@@ -736,8 +708,24 @@ app.get("/getPublicacion/:id", async (req, res) => {
 app.post("/getFavProd/", async (req, res) => {
     const telefono = req.body.telefono;
     const id = req.body.id;
-    var dict = {};
     ModeloProducto.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
+            let c = user["favoritos"];
+            let x = c.indexOf(id) != -1;
+            res.send(x);
+
+        }
+
+        else { res.send("False"); }
+    })
+});
+
+app.post("/getFavContacto/", async (req, res) => {
+    const telefono = req.body.telefono;
+    const id = req.body.id;
+    ModeloUsuario.findOne({ telefono: telefono }, { favoritos: 1, _id: 0 }, function (err, user) {
 
         if (err) { res.send(err); }
         if (user) {
@@ -767,6 +755,29 @@ app.delete("/deleteFav", async (req, res) => {/*{
     const favorito = req.body.favorito;
     
     ModeloProducto.updateOne({telefono:req.body.telefono}, 
+    {$pull:{'favoritos':favorito}
+    }, function (error, prod) {
+        if (error) { res.send("Failed") }
+        else { res.send("Deleted") }
+    });
+});
+
+app.delete("/deleteFavContacto", async (req, res) => {/*{
+    ModeloProducto.findOne({ telefono: telefono }, function (err, user) {
+
+        if (err) { res.send(err); }
+        if (user) {
+            let compare = bcryptjs.compareSync(clave, user["clave"]);
+            if (compare) { res.send("True"); }
+            else { res.send("False"); }
+        }
+
+        else { res.send("False"); }
+    })*/
+    const telefono = req.body.telefono;
+    const favorito = req.body.favorito;
+    
+    ModeloUsuario.updateOne({telefono:req.body.telefono}, 
     {$pull:{'favoritos':favorito}
     }, function (error, prod) {
         if (error) { res.send("Failed") }
@@ -991,7 +1002,7 @@ app.get("/getVendedorP/:id", async (req, res) => {
     { nombre: 1, telefono: 1, "publicaciones._id": 1 }, function (err, user) {
         const cel=user.telefono;
         //console.log(user.telefono)
-        ModeloUsuario.findOne({ telefono: cel }, {_id:0,nombre:1,ubicacion:1, telefono:1},function (err, user) {
+        ModeloUsuario.findOne({ telefono: cel }, {_id:1,nombre:1,ubicacion:1, telefono:1},function (err, user) {
             if (err) { res.send(err); }
             if (user) {
                 
