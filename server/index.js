@@ -969,6 +969,23 @@ app.get("/getVendedorP/:id", async (req, res) => {
  })});
 
 
+
+ app.get("/getUsuario/:telefono", async (req, res) => {
+ 
+        ModeloUsuario.findOne({ telefono: req.params.telefono }, {clave:0,favoritos:0,redesSociales:0}, function (err, user) {
+            if (err) { res.send(err); }
+            if (user) {
+                
+                //console.log(user);
+                res.send(user);
+            }
+
+            else { res.send("False"); }
+                    
+    })});
+ 
+
+
  app.get("/getVendedor/:id", async (req, res) => {
     ModeloProducto.findOne({ "publicaciones._id": req.params.id }, 
     { nombre: 1, telefono: 1, "publicaciones._id": 1 }, function (err, user) {
